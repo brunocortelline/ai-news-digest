@@ -1,0 +1,57 @@
+# Fontes de notícias sobre IA.
+# Adicione/remova feeds aqui sem precisar tocar em código.
+# 'categoria' é usada para agrupar no dashboard final.
+
+feeds:
+  - nome: "OpenAI Blog"
+    url: "https://openai.com/blog/rss.xml"
+    categoria: "Labs & Modelos"
+
+  - nome: "Anthropic News"
+    url: "https://www.anthropic.com/news/rss.xml"
+    categoria: "Labs & Modelos"
+
+  - nome: "Google AI Blog"
+    url: "https://blog.google/technology/ai/rss/"
+    categoria: "Labs & Modelos"
+
+  - nome: "TechCrunch AI"
+    url: "https://techcrunch.com/category/artificial-intelligence/feed/"
+    categoria: "Mercado & Negócios"
+
+  - nome: "VentureBeat AI"
+    url: "https://venturebeat.com/category/ai/feed/"
+    categoria: "Mercado & Negócios"
+
+  - nome: "MIT Technology Review - AI"
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed"
+    categoria: "Pesquisa & Tendências"
+
+  - nome: "The Verge - AI"
+    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"
+    categoria: "Mercado & Negócios"
+
+  - nome: "Hacker News (AI, via HN RSS)"
+    url: "https://hnrss.org/newest?q=AI+OR+LLM+OR+%22artificial+intelligence%22"
+    categoria: "Comunidade & Devs"
+
+# Palavras-chave usadas para filtrar itens relevantes de feeds mais genéricos
+# (não é necessário para feeds que já são 100% sobre IA, mas ajuda a limpar ruído)
+palavras_chave:
+  - "AI"
+  - "artificial intelligence"
+  - "inteligência artificial"
+  - "LLM"
+  - "modelo de linguagem"
+  - "machine learning"
+  - "GPT"
+  - "Claude"
+  - "Gemini"
+  - "agentic"
+  - "agente de IA"
+
+# Quantos dias para trás considerar na busca semanal
+janela_dias: 7
+
+# Máximo de notícias no resumo final (evita boletins gigantes)
+max_noticias: 15
