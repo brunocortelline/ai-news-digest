@@ -48,6 +48,14 @@ python src/main.py
 
 O resultado fica em `docs/index.html` — pode abrir direto no navegador.
 
+## Recursos do dashboard
+
+- **Busca**: filtra por título, resumo ou fonte, em tempo real.
+- **Filtro por categoria**: clique nos chips para ver só uma categoria.
+- **Favoritos**: clique na estrela de uma notícia para marcá-la. Fica salvo
+  no navegador (localStorage) daquele computador/navegador específico — não
+  sincroniza entre dispositivos.
+
 ## Customizações fáceis
 
 - **Adicionar/remover fontes:** edite `config/sources.yaml`. Qualquer feed
