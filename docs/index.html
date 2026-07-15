@@ -4,290 +4,420 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boletim Semanal de IA — 14 de julho de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1115;
-    --card-bg: #171a21;
-    --text: #e8e9ec;
-    --text-muted: #9aa0aa;
-    --accent: #7c9eff;
-    --border: #262b35;
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
   }
   header {
-    padding: 48px 24px 24px;
-    max-width: 900px;
-    margin: 0 auto;
+    padding: 48px 0 28px;
+    position: relative;
   }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
   header h1 {
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 28px;
-    margin: 0 0 8px;
-  }
-  header p {
-    color: var(--text-muted);
+    font-weight: 600;
     margin: 0;
+    letter-spacing: -0.01em;
   }
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 24px 64px;
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 6px 0 0;
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    position: relative;
+    z-index: 1;
   }
-  .categoria {
-    margin-top: 40px;
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
   }
-  .categoria h2 {
-    font-size: 18px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.15s ease;
+  }
+  .chip:hover { border-color: var(--border-strong); }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent-bg);
+    border-color: var(--accent);
     color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
+    font-weight: 500;
   }
-  .cards {
-    display: grid;
-    gap: 16px;
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito-bg);
+    border-color: var(--favorito);
+    color: #8A4B12;
+  }
+  .contador {
     margin-top: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
   }
   .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
     border-radius: 10px;
-    padding: 20px;
+    padding: 18px 20px;
+    position: relative;
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
   }
   .card-meta {
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    flex-wrap: wrap;
   }
+  .selo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
   .card h3 {
     margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
   }
   .card h3 a {
     color: var(--text);
     text-decoration: none;
   }
-  .card h3 a:hover {
-    color: var(--accent);
-    text-decoration: underline;
-  }
+  .card h3 a:hover { color: var(--accent); }
   .resumo {
-    margin: 0 0 8px;
-    color: var(--text);
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
   }
   .por-que {
     margin: 0;
-    font-size: 14px;
-    color: var(--text-muted);
-    border-left: 2px solid var(--accent);
-    padding-left: 10px;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
   }
-  footer {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 24px;
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
     color: var(--text-muted);
-    font-size: 13px;
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
     border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
   }
 </style>
 </head>
 <body>
-  <header>
-    <h1>🤖 Boletim Semanal de IA</h1>
-    <p>Edição de 14 de julho de 2026 · 15 notícias selecionadas</p>
-  </header>
-  <main>
-    
-        <section class="categoria">
-          <h2>Mercado & Negócios</h2>
-          <div class="cards">
-            
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">TechCrunch AI</span>
-        <span class="data">14/07/2026</span>
+  <div class="envelope">
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Boletim Semanal de IA</h1>
       </div>
-      <h3><a href="https://techcrunch.com/2026/07/14/google-faces-another-ai-training-lawsuit-from-major-publishers/" target="_blank" rel="noopener">Grandes editoras processam Google por uso indevido de conteúdo em IA</a></h3>
-      <p class="resumo">Hachette, Cengage, Elsevier e outras editoras entraram com uma ação judicial contra o Google, alegando que a empresa treinou seus modelos de IA usando obras protegidas por direitos autorais sem as devidas permissões ou licenciamento. O processo se soma a uma série de disputas legais enfrentadas por grandes empresas de tecnologia sobre o uso de conteúdo protegido no treinamento de sistemas de IA.</p>
-      <p class="por-que"><strong>Por que importa:</strong> O caso reforça a pressão regulatória e jurídica sobre práticas de treinamento de IA, podendo elevar custos de licenciamento de dados e forçar empresas de tecnologia a repensar suas estratégias de aquisição de conteúdo.</p>
-    </article>
-    
+      <p class="subtitulo">edição de 14 de julho de 2026 · 15 notícias captadas</p>
 
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">TechCrunch AI</span>
-        <span class="data">14/07/2026</span>
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
       </div>
-      <h3><a href="https://techcrunch.com/2026/07/14/deepmind-ceo-calls-for-an-independent-standards-body-to-regulate-frontier-ai/" target="_blank" rel="noopener">CEO do DeepMind propõe órgão independente para regular IA de fronteira</a></h3>
-      <p class="resumo">Demis Hassabis, CEO do Google DeepMind, defendeu a criação de um órgão de padronização independente para testar modelos de IA de ponta e estabelecer boas práticas de lançamento. A proposta se inspira no modelo da FINRA, entidade autorreguladora do mercado financeiro americano.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Empresas de tecnologia devem se antecipar e monitorar essa discussão regulatória, já que padrões de certificação para IA de fronteira podem impactar diretamente prazos de lançamento e requisitos de compliance de produtos baseados em modelos avançados.</p>
-    </article>
-    
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "Grandes editoras processam Google por uso de conteúdo em IA", "resumo": "Hachette, Cengage, Elsevier e outras editoras entraram com uma ação judicial contra o Google, alegando que a empresa treinou seus modelos de IA usando obras protegidas por direitos autorais sem a devida autorização. O processo se soma a uma onda crescente de litígios envolvendo o uso de conteúdo protegido no treinamento de sistemas de inteligência artificial.", "por_que_importa": "O desfecho pode redefinir as regras de licenciamento de dados para treinamento de IA, impactando custos e estratégias de fornecedores de conteúdo e empresas que dependem de modelos de linguagem.", "link": "https://techcrunch.com/2026/07/14/google-faces-another-ai-training-lawsuit-from-major-publishers/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "14/07/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Linux Foundation quer padronizar pagamentos para agentes de IA", "resumo": "A Linux Foundation lançou uma nova iniciativa para criar um padrão aberto de pagamentos voltado a agentes de IA, chamado x402. O objetivo é permitir que sistemas autônomos realizem transações financeiras de forma interoperável entre diferentes plataformas e provedores.", "por_que_importa": "Um padrão aberto para pagamentos entre agentes pode acelerar a criação de novos modelos de negócio baseados em IA autônoma, algo estratégico para empresas que planejam oferecer serviços via agentes.", "link": "https://www.phoronix.com/news/Linux-Foundation-x402", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "People Who Will Thrive in the AI Age", "resumo": "Não foi possível gerar o resumo automaticamente para este item.", "por_que_importa": "", "link": "https://www.theatlantic.com/ideas/2026/06/ai-open-ai-anthropic/687689/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Artigo propõe cinco 'leis' práticas sobre IA generativa", "resumo": "Um post de blog no Hacker News apresenta cinco princípios ou heurísticas para entender o comportamento e as limitações da IA generativa no dia a dia. O texto, de caráter opinativo, discute padrões observados no uso prático dessas ferramentas, sem citar dados formais de pesquisa.", "por_que_importa": "Heurísticas simples como essas ajudam times de produto a calibrar expectativas e definir limites realistas ao integrar IA generativa em fluxos de trabalho.", "link": "https://isaaclyman.com/blog/posts/five-laws-of-ai/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Open Sourcing the Atuin AI Server", "resumo": "Não foi possível gerar o resumo automaticamente para este item.", "por_que_importa": "", "link": "https://blog.atuin.sh/atuin-ai-oss/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Poseberry cria influenciadores de IA para divulgar produtos", "resumo": "O Poseberry é uma ferramenta que gera influenciadores digitais baseados em IA, posicionando-os visualmente ao lado de produtos reais para fins de marketing. A proposta é permitir que marcas produzam conteúdo promocional sem depender de modelos ou fotógrafos humanos.", "por_que_importa": "Reduz custos de produção de conteúdo publicitário, mas levanta questões sobre autenticidade e regulamentação do uso de personas sintéticas em marketing digital.", "link": "https://poseberry.com", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Estudo avalia 1.018 prompts reais: robustez média é de apenas 31/100", "resumo": "Uma análise de 1.018 prompts de uso real em produção mediu a robustez desses comandos de IA, chegando a uma pontuação média de apenas 31 em 100. O estudo aponta que a maioria dos prompts usados no dia a dia é frágil e suscetível a falhas quando exposta a variações de contexto ou entrada.", "por_que_importa": "Empresas que dependem de prompts mal testados em produtos de IA correm risco real de falhas silenciosas, exigindo processos formais de validação e QA para prompts antes do deploy.", "link": "https://prompt-eval.com/state-of-prompt-quality/2026-q3", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Llm.c migrado para Mojo é 1,72x mais rápido que PyTorch", "resumo": "Um desenvolvedor portou o projeto llm.c para a linguagem Mojo, utilizando kernels Metal para acelerar o treinamento em GPUs Apple. O resultado mostrou desempenho 1,72 vezes superior ao PyTorch MPS no mesmo hardware.", "por_que_importa": "Mostra que linguagens alternativas como Mojo podem otimizar custos de infraestrutura de IA em hardware Apple, relevante para empresas avaliando eficiência de treinamento sem depender de GPUs Nvidia.", "link": "https://github.com/ulmentflam/llm.mojo", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Inventing Eliza – How the First Chatbot Shaped AI", "resumo": "Não foi possível gerar o resumo automaticamente para este item.", "por_que_importa": "", "link": "https://mitpress.mit.edu/9780262052481/inventing-eliza/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Nova York proíbe construção de data centers por um ano", "resumo": "Nova York se tornou o primeiro estado americano a impor uma moratória de um ano na construção de novos data centers. A medida busca conter impactos no consumo de energia e na infraestrutura elétrica local, gerando forte reação da indústria de IA.", "por_que_importa": "Restrições regionais à infraestrutura física podem redesenhar a geografia dos investimentos em IA, encarecendo capacidade computacional e forçando empresas a reavaliar planos de expansão nos EUA.", "link": "https://arstechnica.com/tech-policy/2026/07/new-york-is-the-first-state-to-impose-a-data-center-moratorium/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "LinkedIn and X Are Flooded with AI Spam", "resumo": "Não foi possível gerar o resumo automaticamente para este item.", "por_que_importa": "", "link": "https://www.404media.co/linkedin-and-x-are-flooded-with-ai-spam-browsing-data-suggests/", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Bonsai 27B: modelo de 1-bit roda em smartphones comuns", "resumo": "A Prism ML lançou o Bonsai 27B, descrito como o primeiro modelo de linguagem com 27 bilhões de parâmetros capaz de rodar em um smartphone comum. O feito é possível graças à quantização extrema em 1-bit, que reduz drasticamente o consumo de memória e processamento sem exigir hardware especializado.", "por_que_importa": "Modelos grandes rodando localmente em celulares reduzem custos de nuvem e abrem caminho para produtos de IA offline, com mais privacidade e menor latência — um diferencial competitivo para apps que dependem de inferência em tempo real.", "link": "https://prismml.com/news/bonsai-27b", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Projeto Panamá: por que empresa de IA desmontou livros físicos", "resumo": "Um artigo revela detalhes do 'Project Panama', iniciativa da Anthropic que envolveu desencadernar e digitalizar livros físicos em larga escala para treinar seus modelos de IA. A prática expõe os bastidores pouco conhecidos da coleta de dados usada por empresas de IA generativa, incluindo aspectos logísticos e legais dessa aquisição de conteúdo protegido por direitos autorais.", "por_que_importa": "Empresas de tecnologia que dependem de dados para treinar IA precisam avaliar riscos jurídicos e reputacionais nas estratégias de aquisição de conteúdo, especialmente diante de disputas sobre direitos autorais no setor.", "link": "https://www.tobiasreithmeier.de/en/blog/project-panama-anthropic-books", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "Masayoshi Son ironiza críticos da IA e compara a 'cuspir para cima'", "resumo": "O bilionário Masayoshi Son, fundador do SoftBank, criticou publicamente quem duvida do potencial da inteligência artificial, usando a expressão de que esses críticos estariam 'cuspindo para cima'. A declaração reforça a aposta agressiva do SoftBank em investimentos bilionários no setor de IA, mesmo diante de ceticismo do mercado sobre valuations e retorno financeiro.", "por_que_importa": "A postura de Son sinaliza que grandes investidores seguirão injetando capital massivo em IA apesar dos riscos de bolha, o que pode manter aquecido o mercado de infraestrutura e startups do setor no curto prazo.", "link": "https://www.ft.com/content/fc0d48f4-a2ce-45b1-a0ad-83a0a8409f00", "fonte": "Hacker News (AI, via HN RSS)", "categoria": "Comunidade & Devs", "data": "14/07/2026", "cor": "#D4537E", "selo_bg": "#FBE9EF", "selo_texto": "#8A2A50"}, {"titulo": "CEO do DeepMind pede órgão independente para regular IA de fronteira", "resumo": "Demis Hassabis, CEO do DeepMind, propôs a criação de um órgão de padrões para IA inspirado na FINRA, entidade que regula o mercado financeiro nos EUA. A ideia é testar modelos de fronteira e estabelecer boas práticas para seu lançamento, com participação da indústria e supervisão independente.", "por_que_importa": "Empresas de TI devem acompanhar de perto essa proposta, pois padrões de certificação e testes obrigatórios podem redefinir prazos de lançamento e exigir novos processos de compliance para produtos baseados em IA.", "link": "https://techcrunch.com/2026/07/14/deepmind-ceo-calls-for-an-independent-standards-body-to-regulate-frontier-ai/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "14/07/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Mercado & Negócios", "cor": "#1D9E75"}, {"nome": "Comunidade & Devs", "cor": "#D4537E"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
           </div>
-        </section>
-        
-        <section class="categoria">
-          <h2>Comunidade & Devs</h2>
-          <div class="cards">
-            
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://www.phoronix.com/news/Linux-Foundation-x402" target="_blank" rel="noopener">Linux Foundation quer padronizar pagamentos para agentes de IA</a></h3>
-      <p class="resumo">A Linux Foundation lançou uma iniciativa para criar um padrão aberto de pagamentos voltado a agentes de IA, batizado de x402. O objetivo é permitir que sistemas autônomos realizem transações financeiras de forma interoperável entre diferentes plataformas e provedores.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Um padrão aberto de pagamentos pode acelerar a criação de agentes de IA capazes de comprar serviços e dados de forma autônoma, abrindo espaço para novos modelos de negócio baseados em micropagamentos automatizados.</p>
-    </article>
-    
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3><a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a></h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
 
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://www.theatlantic.com/ideas/2026/06/ai-open-ai-anthropic/687689/" target="_blank" rel="noopener">Quem vai se destacar na era da inteligência artificial</a></h3>
-      <p class="resumo">O artigo da The Atlantic discute quais perfis profissionais e características pessoais tendem a prosperar conforme a IA se torna mais presente no trabalho e na sociedade. O foco está em habilidades como julgamento crítico, criatividade, adaptabilidade e capacidade de fazer perguntas certas, em contraste com tarefas puramente técnicas ou repetitivas que a IA já automatiza.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Empresas de TI devem repensar critérios de contratação e programas de capacitação, priorizando habilidades humanas complementares à IA em vez de apenas competências técnicas facilmente automatizáveis.</p>
-    </article>
-    
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
 
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://isaaclyman.com/blog/posts/five-laws-of-ai/" target="_blank" rel="noopener">Artigo propõe cinco leis fundamentais da IA generativa</a></h3>
-      <p class="resumo">Um post de blog no Hacker News apresenta cinco princípios ou 'leis' que buscam explicar padrões de comportamento e limitações observadas em modelos de IA generativa. A discussão teve baixa repercussão na comunidade, com poucos votos e nenhum comentário registrado até o momento.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Frameworks conceituais como esse ajudam times de produto a antecipar limitações e definir expectativas realistas ao integrar IA generativa em soluções corporativas.</p>
-    </article>
-    
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
 
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://blog.atuin.sh/atuin-ai-oss/" target="_blank" rel="noopener">Atuin abre código-fonte de seu servidor de IA</a></h3>
-      <p class="resumo">A equipe do Atuin, ferramenta de histórico de shell, anunciou a abertura do código-fonte do seu servidor de IA. A iniciativa permite que desenvolvedores auditem, customizem e hospedem localmente os recursos de inteligência artificial da plataforma.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Reforça a tendência de open source em infraestrutura de IA para ferramentas de desenvolvedor, oferecendo alternativas de autohospedagem que reduzem dependência de provedores fechados e aumentam controle sobre dados sensíveis.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://poseberry.com" target="_blank" rel="noopener">Poseberry cria influenciadores de IA para divulgar produtos</a></h3>
-      <p class="resumo">O Poseberry é uma ferramenta que gera influenciadores digitais baseados em IA capazes de posar com produtos de clientes em fotos. A proposta é permitir que marcas criem conteúdo de marketing visual sem precisar contratar modelos ou fotógrafos reais.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Reduz custos de produção de conteúdo publicitário, mas levanta questões sobre autenticidade, direitos de imagem e diferenciação de marca em um mercado saturado de mídia sintética.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://prompt-eval.com/state-of-prompt-quality/2026-q3" target="_blank" rel="noopener">Estudo avalia 1.018 prompts reais: robustez média é só 31/100</a></h3>
-      <p class="resumo">Uma análise de mais de mil prompts de IA usados em produção revelou uma pontuação média de robustez de apenas 31 em 100 pontos. O estudo sugere que grande parte dos prompts em uso real é frágil e suscetível a falhas quando exposta a variações de entrada.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Empresas que dependem de prompts mal testados em produtos de IA correm risco real de comportamentos inconsistentes e falhas em escala, reforçando a necessidade de processos rigorosos de validação e engenharia de prompts.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://github.com/ulmentflam/llm.mojo" target="_blank" rel="noopener">Llm.c portado para Mojo é 1,72x mais rápido que PyTorch</a></h3>
-      <p class="resumo">Um desenvolvedor portou o projeto llm.c para a linguagem Mojo, utilizando kernels Metal para acelerar o treinamento em GPUs Apple. Os testes mostraram desempenho 1,72 vezes superior ao PyTorch MPS na mesma tarefa.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Reforça o potencial do Mojo como alternativa de alta performance para treinar modelos de IA em hardware Apple, algo relevante para empresas avaliando custos e eficiência em infraestrutura de ML.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://mitpress.mit.edu/9780262052481/inventing-eliza/" target="_blank" rel="noopener">Inventing Eliza – How the First Chatbot Shaped AI</a></h3>
-      <p class="resumo">Não foi possível gerar o resumo automaticamente para este item.</p>
-      
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://arstechnica.com/tech-policy/2026/07/new-york-is-the-first-state-to-impose-a-data-center-moratorium/" target="_blank" rel="noopener">Nova York proíbe construção de data centers por um ano</a></h3>
-      <p class="resumo">O estado de Nova York se tornou o primeiro nos EUA a impor uma moratória de um ano para novas construções de data centers, medida que pegou de surpresa a indústria de IA. A decisão reflete preocupações crescentes com consumo energético, impacto ambiental e infraestrutura elétrica local.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Restrições regulatórias regionais podem redesenhar mapas de investimento em infraestrutura de IA, forçando empresas a buscar alternativas de localização e acelerando pressões por eficiência energética nos data centers.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://www.404media.co/linkedin-and-x-are-flooded-with-ai-spam-browsing-data-suggests/" target="_blank" rel="noopener">LinkedIn e X estão inundados por spam gerado por IA</a></h3>
-      <p class="resumo">Dados de navegação analisados pela 404 Media indicam um aumento expressivo de conteúdo gerado por IA nas redes LinkedIn e X, incluindo posts, comentários e perfis falsos. O fenômeno sugere que ferramentas de geração automática de texto estão sendo usadas em larga escala para produzir conteúdo de baixa qualidade nessas plataformas.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Empresas que dependem dessas redes para marketing, recrutamento ou reputação de marca precisam reavaliar estratégias de moderação e autenticação de conteúdo diante da diluição da confiança gerada pelo spam de IA.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://prismml.com/news/bonsai-27b" target="_blank" rel="noopener">Bonsai 27B: modelo 1-bit roda em smartphones comuns</a></h3>
-      <p class="resumo">A Prism ML lançou o Bonsai 27B, um modelo de linguagem com 27 bilhões de parâmetros que utiliza quantização de 1 bit, permitindo sua execução direta em smartphones. É apresentado como o primeiro modelo dessa escala capaz de rodar localmente em hardware móvel, sem depender de nuvem.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Viabilizar modelos grandes on-device reduz custos de inferência em nuvem e abre caminho para produtos de IA com privacidade e latência muito melhores em dispositivos móveis.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://www.tobiasreithmeier.de/en/blog/project-panama-anthropic-books" target="_blank" rel="noopener">Projeto Panama: por que Anthropic desmontou livros físicos para treinar IA</a></h3>
-      <p class="resumo">O artigo detalha como a Anthropic comprou e destruiu fisicamente milhões de livros impressos, cortando suas lombadas para digitalizá-los em massa e usar o conteúdo no treinamento de seus modelos de IA. A prática, batizada de 'Project Panama', foi revelada em processos judiciais e evidencia a corrida por dados de qualidade para alimentar LLMs.</p>
-      <p class="por-que"><strong>Por que importa:</strong> Mostra até onde empresas de IA estão dispostas a ir para obter dados de treinamento legalmente defensáveis, o que pode influenciar estratégias de licenciamento de conteúdo e riscos jurídicos para negócios que dependem de dados proprietários.</p>
-    </article>
-    
-
-    <article class="card">
-      <div class="card-meta">
-        <span class="fonte">Hacker News (AI, via HN RSS)</span>
-        <span class="data">14/07/2026</span>
-      </div>
-      <h3><a href="https://www.ft.com/content/fc0d48f4-a2ce-45b1-a0ad-83a0a8409f00" target="_blank" rel="noopener">Masayoshi Son ironiza críticos da IA e compara a 'cuspir para cima'</a></h3>
-      <p class="resumo">O bilionário Masayoshi Son, da SoftBank, rebateu publicamente críticos do boom de investimentos em IA, dizendo que quem duvida da tecnologia está 'cuspindo para cima'. A declaração reforça a postura agressiva do SoftBank em apostas bilionárias no setor, mesmo diante de preocupações crescentes sobre uma possível bolha.</p>
-      <p class="por-que"><strong>Por que importa:</strong> A fala sinaliza que grandes investidores seguem dobrando apostas em IA apesar dos alertas de bolha, o que pode manter o ritmo de capital e pressão competitiva sobre empresas de tecnologia no curto prazo.</p>
-    </article>
-    
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
           </div>
-        </section>
-        
-  </main>
-  <footer>
-    Gerado automaticamente a partir de fontes públicas, resumido e traduzido com a API da Claude (Anthropic).
-  </footer>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
 </body>
 </html>
