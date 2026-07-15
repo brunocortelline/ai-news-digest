@@ -189,6 +189,24 @@ TEMPLATE_HTML = """<!DOCTYPE html>
     position: relative;
     z-index: 1;
   }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+    margin: 24px 0 -12px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 500;
+  }
   .controles {
     margin-top: 28px;
     position: relative;
@@ -354,13 +372,14 @@ TEMPLATE_HTML = """<!DOCTYPE html>
 </head>
 <body>
   <div class="envelope">
+    __BANNER_ARQUIVO__
     <header>
       <div class="radar-fundo"></div>
       <div class="titulo-linha">
         <div class="radar-icone"></div>
         <h1>Boletim Semanal de IA</h1>
       </div>
-      <p class="subtitulo">edição de __EDICAO__ · __TOTAL__ notícias captadas</p>
+      <p class="subtitulo">edição de __EDICAO__ · __TOTAL__ notícias captadas · <a class="link-arquivo" href="__LINK_ARQUIVO__">ver edições anteriores</a></p>
 
       <div class="controles">
         <div class="busca">
@@ -471,7 +490,7 @@ TEMPLATE_HTML = """<!DOCTYPE html>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </button>
         </div>
-        <h3><a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a></h3>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
         <p class="resumo">${escaparHtml(a.resumo)}</p>
         ${porQue}
       </article>
@@ -524,32 +543,157 @@ TEMPLATE_HTML = """<!DOCTYPE html>
 """
 
 
-def gerar_html(artigos: list[dict]) -> str:
-    agora = datetime.now(timezone.utc)
+def gerar_html(artigos: list[dict], modo: str = "atual", data_edicao: datetime = None) -> str:
+    """
+    modo="atual": gera a edição mais recente (publicada em docs/index.html).
+    modo="arquivo": gera uma edição antiga (publicada em docs/arquivo/AAAA-MM-DD.html),
+                    com um banner avisando que é uma edição antiga e link para a mais recente.
+    """
+    agora = data_edicao or datetime.now(timezone.utc)
     artigos_preparados = _preparar_artigos_para_js(artigos)
     categorias = _categorias_para_js(artigos_preparados)
 
     artigos_json = json.dumps(artigos_preparados, ensure_ascii=False).replace("</", "<\\/")
     categorias_json = json.dumps(categorias, ensure_ascii=False).replace("</", "<\\/")
 
+    if modo == "arquivo":
+        link_arquivo = "index.html"  # índice de edições, já dentro de docs/arquivo/
+        banner = (
+            f'<div class="banner-arquivo">📚 Esta é uma edição anterior '
+            f'({_data_extenso_pt(agora)}). <a href="../index.html">Ver a edição mais recente →</a></div>'
+        )
+    else:
+        link_arquivo = "arquivo/index.html"
+        banner = ""
+
     html = TEMPLATE_HTML
     html = html.replace("__EDICAO__", _data_extenso_pt(agora))
     html = html.replace("__TOTAL__", str(len(artigos)))
     html = html.replace("__ARTIGOS_JSON__", artigos_json)
     html = html.replace("__CATEGORIAS_JSON__", categorias_json)
+    html = html.replace("__LINK_ARQUIVO__", link_arquivo)
+    html = html.replace("__BANNER_ARQUIVO__", banner)
     return html
+
+
+def _listar_edicoes_anteriores() -> list[dict]:
+    if not ARQUIVO_DIR.exists():
+        return []
+
+    edicoes = []
+    for arq in sorted(ARQUIVO_DIR.glob("*.html"), reverse=True):
+        if arq.name == "index.html":
+            continue
+        try:
+            data = datetime.strptime(arq.stem, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            data_fmt = _data_extenso_pt(data)
+        except ValueError:
+            data_fmt = arq.stem
+        edicoes.append({"arquivo": arq.name, "data": data_fmt})
+    return edicoes
+
+
+TEMPLATE_INDICE_ARQUIVO = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edições anteriores — Boletim Semanal de IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --accent: #5A4FCF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
+  a.voltar {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  a.voltar:hover { text-decoration: underline; }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    margin: 20px 0 4px;
+  }
+  p.subtitulo { color: var(--text-muted); margin: 0 0 28px; font-size: 14px; }
+  ul.lista-edicoes { list-style: none; padding: 0; margin: 0; }
+  ul.lista-edicoes li {
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  ul.lista-edicoes a {
+    display: block;
+    padding: 14px 18px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+  }
+  ul.lista-edicoes a:hover { color: var(--accent); }
+  .vazio { color: var(--text-muted); margin-top: 20px; }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <a class="voltar" href="../index.html">&larr; voltar para a edição mais recente</a>
+    <h1>📚 Edições anteriores</h1>
+    <p class="subtitulo">Todo o histórico do Boletim Semanal de IA, uma edição por semana.</p>
+    __LISTA_EDICOES__
+  </div>
+</body>
+</html>
+"""
+
+
+def _gerar_indice_arquivo() -> str:
+    edicoes = _listar_edicoes_anteriores()
+
+    if not edicoes:
+        lista_html = '<p class="vazio">Nenhuma edição anterior ainda.</p>'
+    else:
+        itens = "\n".join(
+            f'      <li><a href="{e["arquivo"]}">{e["data"]}</a></li>' for e in edicoes
+        )
+        lista_html = f'<ul class="lista-edicoes">\n{itens}\n    </ul>'
+
+    return TEMPLATE_INDICE_ARQUIVO.replace("__LISTA_EDICOES__", lista_html)
 
 
 def publicar(artigos: list[dict]):
     DOCS_DIR.mkdir(exist_ok=True)
     ARQUIVO_DIR.mkdir(exist_ok=True)
 
-    html = gerar_html(artigos)
+    agora = datetime.now(timezone.utc)
 
-    (DOCS_DIR / "index.html").write_text(html, encoding="utf-8")
+    # edição atual (link fixo, sempre a mais recente)
+    html_atual = gerar_html(artigos, modo="atual", data_edicao=agora)
+    (DOCS_DIR / "index.html").write_text(html_atual, encoding="utf-8")
 
-    nome_arquivo = datetime.now(timezone.utc).strftime("%Y-%m-%d") + ".html"
-    (ARQUIVO_DIR / nome_arquivo).write_text(html, encoding="utf-8")
+    # cópia no histórico, em modo "arquivo" (com banner e links de navegação corretos)
+    html_arquivo = gerar_html(artigos, modo="arquivo", data_edicao=agora)
+    nome_arquivo = agora.strftime("%Y-%m-%d") + ".html"
+    (ARQUIVO_DIR / nome_arquivo).write_text(html_arquivo, encoding="utf-8")
+
+    # atualiza o índice com a lista de todas as edições
+    (ARQUIVO_DIR / "index.html").write_text(_gerar_indice_arquivo(), encoding="utf-8")
 
 
 if __name__ == "__main__":

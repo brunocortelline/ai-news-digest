@@ -5,6 +5,7 @@ na prática" — pensado para leitura rápida em um boletim semanal.
 """
 
 import os
+import re
 import json
 import anthropic
 
@@ -21,38 +22,85 @@ Para cada notícia recebida (título e resumo original, possivelmente em inglês
 3. Uma frase curta de "por que importa" (relevância prática/estratégica), focada em
    possíveis implicações para produtos, inovação ou negócios — não genérica.
 
-Responda SOMENTE em JSON válido, sem markdown, sem texto antes ou depois, no formato:
+IMPORTANTE: às vezes o "resumo original" recebido é só metadado (ex: link do artigo,
+número de pontos/comentários no Hacker News), sem o conteúdo real do texto. Nesses casos,
+NUNCA se recuse e NUNCA explique a limitação — gere o melhor resumo possível baseado
+apenas no título, de forma honesta e direta (ex: "O título sugere uma discussão sobre
+X; é uma indicação popular na comunidade, mas o conteúdo completo não foi analisado.").
+Sempre produza os três campos, mesmo que de forma mais genérica.
+
+Responda SEMPRE e SOMENTE em JSON válido, sem markdown, sem crases, sem texto antes ou
+depois, exatamente neste formato:
 {"titulo_pt": "...", "resumo_pt": "...", "por_que_importa": "..."}
 """
 
+LEMBRETE_FORMATO = (
+    "Lembrete: responda SOMENTE com o objeto JSON, nada de texto antes ou depois, "
+    "nada de explicações sobre limitações. Só o JSON."
+)
 
-def resumir_e_traduzir(artigo: dict) -> dict:
-    conteudo_usuario = (
-        f"Título original: {artigo['titulo_original']}\n"
-        f"Fonte: {artigo['fonte']}\n"
-        f"Resumo original: {artigo['resumo_original'][:1500]}"
-    )
+
+def _extrair_json(texto: str):
+    """Tenta interpretar o texto como JSON. Se falhar, tenta extrair o primeiro
+    bloco { ... } do texto (caso o modelo tenha adicionado algo antes/depois)."""
+    texto = texto.strip()
+    try:
+        return json.loads(texto)
+    except json.JSONDecodeError:
+        pass
+
+    match = re.search(r"\{.*\}", texto, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def _chamar_modelo(conteudo_usuario: str, reforcar_formato: bool = False) -> str:
+    mensagens = [{"role": "user", "content": conteudo_usuario}]
+    if reforcar_formato:
+        mensagens.append({"role": "assistant", "content": "{"})  # induz a começar direto pelo JSON
 
     resposta = client.messages.create(
         model=MODELO,
         max_tokens=500,
         system=PROMPT_SISTEMA,
-        messages=[{"role": "user", "content": conteudo_usuario}],
+        messages=mensagens,
     )
 
     texto = "".join(
         bloco.text for bloco in resposta.content if getattr(bloco, "type", None) == "text"
     )
 
-    try:
-        dados = json.loads(texto.strip())
-    except json.JSONDecodeError:
-        # fallback defensivo caso o modelo devolva algo fora do formato esperado
-        dados = {
-            "titulo_pt": artigo["titulo_original"],
-            "resumo_pt": "Não foi possível gerar o resumo automaticamente para este item.",
-            "por_que_importa": "",
-        }
+    if reforcar_formato:
+        texto = "{" + texto
+
+    return texto
+
+
+def resumir_e_traduzir(artigo: dict):
+    conteudo_usuario = (
+        f"Título original: {artigo['titulo_original']}\n"
+        f"Fonte: {artigo['fonte']}\n"
+        f"Resumo original: {artigo['resumo_original'][:1500]}\n\n"
+        f"{LEMBRETE_FORMATO}"
+    )
+
+    texto = _chamar_modelo(conteudo_usuario)
+    dados = _extrair_json(texto)
+
+    if dados is None:
+        # segunda tentativa: força o modelo a começar a resposta já com "{"
+        texto_retry = _chamar_modelo(conteudo_usuario, reforcar_formato=True)
+        dados = _extrair_json(texto_retry)
+
+    if dados is None:
+        # não conseguimos gerar um resumo confiável nem na segunda tentativa —
+        # melhor descartar o item do que mostrar um card com aviso de erro
+        print(f"[aviso] descartando item sem resumo confiável: '{artigo['titulo_original']}'")
+        return None
 
     artigo_traduzido = {**artigo, **dados}
     return artigo_traduzido
@@ -62,7 +110,9 @@ def processar_lista(artigos: list[dict]) -> list[dict]:
     processados = []
     for artigo in artigos:
         try:
-            processados.append(resumir_e_traduzir(artigo))
+            resultado = resumir_e_traduzir(artigo)
+            if resultado is not None:
+                processados.append(resultado)
         except Exception as e:
             print(f"[aviso] falha ao processar '{artigo['titulo_original']}': {e}")
     return processados

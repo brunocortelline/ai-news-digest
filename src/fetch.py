@@ -5,12 +5,27 @@ Filtra por janela de tempo e palavras-chave, e devolve uma lista de artigos crus
 """
 
 import time
+import re
 import yaml
 import feedparser
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 CONFIG_PATH = Path(__file__).parent.parent / "config" / "sources.yaml"
+
+# Padrões comuns de metadado (sem conteúdo real) em alguns feeds, ex: Hacker News
+_PADROES_METADADO = re.compile(
+    r"(?i)(article url|comments url|points|#\s*comments)\s*:?"
+)
+
+
+def _tem_conteudo_substancial(resumo_original: str, minimo_palavras: int = 10) -> bool:
+    """Verifica se o resumo original tem texto de verdade para resumir, e não
+    é só metadado (ex: 'Article URL: ... Comments URL: ... Points: 42')."""
+    texto = re.sub(r"https?://\S+", "", resumo_original)
+    texto = _PADROES_METADADO.sub("", texto)
+    palavras = [p for p in re.split(r"\s+", texto.strip()) if p]
+    return len(palavras) >= minimo_palavras
 
 
 def carregar_config():
@@ -28,9 +43,16 @@ def _entry_para_dict(entry, fonte, categoria):
 
     resumo_original = getattr(entry, "summary", "") or getattr(entry, "description", "")
 
+    link = getattr(entry, "link", "") or ""
+    if not link.startswith("http"):
+        # fallback: alguns feeds trazem o link em 'id' quando 'link' vem vazio/malformado
+        candidato = getattr(entry, "id", "") or ""
+        if candidato.startswith("http"):
+            link = candidato
+
     return {
         "titulo_original": getattr(entry, "title", "(sem título)"),
-        "link": getattr(entry, "link", ""),
+        "link": link,
         "resumo_original": resumo_original,
         "data_publicacao": data_publicacao,
         "fonte": fonte,
@@ -70,6 +92,9 @@ def buscar_noticias():
                 continue
 
             if not _e_relevante(item, palavras_chave):
+                continue
+
+            if not _tem_conteudo_substancial(item["resumo_original"]):
                 continue
 
             artigos.append(item)
