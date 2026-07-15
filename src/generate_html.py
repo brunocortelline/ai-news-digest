@@ -106,7 +106,7 @@ TEMPLATE_HTML = """<!DOCTYPE html>
 <title>Boletim Semanal de IA — __EDICAO__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F4F6FB;
@@ -183,9 +183,9 @@ TEMPLATE_HTML = """<!DOCTYPE html>
   }
   header p.subtitulo {
     color: var(--text-muted);
-    margin: 6px 0 0;
-    font-size: 14px;
-    font-family: 'IBM Plex Mono', monospace;
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
     position: relative;
     z-index: 1;
   }
@@ -195,18 +195,25 @@ TEMPLATE_HTML = """<!DOCTYPE html>
   }
   .link-arquivo:hover { text-decoration: underline; }
   .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
     background: var(--accent-bg);
-    border: 1px solid var(--accent);
     color: var(--accent);
-    border-radius: 8px;
-    padding: 10px 16px;
+    border-radius: 12px;
+    padding: 12px 18px;
     font-size: 13.5px;
+    font-weight: 500;
     margin: 24px 0 -12px;
   }
   .banner-arquivo a {
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
+    text-decoration: none;
   }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
   .controles {
     margin-top: 28px;
     position: relative;
@@ -239,40 +246,38 @@ TEMPLATE_HTML = """<!DOCTYPE html>
     margin-top: 14px;
   }
   .chip {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
+    border: 1px solid transparent;
+    background: #EDEFF6;
     color: var(--text-secondary);
     cursor: pointer;
     user-select: none;
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: border-color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
-  .chip:hover { border-color: var(--border-strong); }
+  .chip:hover { background: #E3E6F1; }
   .chip .ponto {
     width: 7px; height: 7px; border-radius: 50%;
     display: inline-block;
   }
   .chip.ativo {
-    background: var(--accent-bg);
-    border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 500;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
   }
   .chip.favoritos-chip.ativo {
-    background: var(--favorito-bg);
-    border-color: var(--favorito);
-    color: #8A4B12;
+    background: var(--favorito);
+    color: #fff;
   }
   .contador {
     margin-top: 16px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--text-muted);
   }
   main { margin-top: 8px; }
@@ -285,32 +290,37 @@ TEMPLATE_HTML = """<!DOCTYPE html>
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-left: 3px solid var(--card-cor, var(--accent));
-    border-radius: 10px;
-    padding: 18px 20px;
+    border-radius: 14px;
+    padding: 20px 22px;
     position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
   }
   .card-topo {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .card-meta {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--text-muted);
     flex-wrap: wrap;
   }
   .selo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    padding: 3px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
     border-radius: 999px;
-    font-weight: 500;
+    letter-spacing: 0.01em;
   }
   .favorito-btn {
     background: none;
@@ -361,8 +371,7 @@ TEMPLATE_HTML = """<!DOCTYPE html>
     padding-top: 20px;
     border-top: 1px solid var(--border);
     color: var(--text-muted);
-    font-size: 12.5px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
   }
   @media (max-width: 480px) {
     header h1 { font-size: 23px; }
@@ -559,8 +568,10 @@ def gerar_html(artigos: list[dict], modo: str = "atual", data_edicao: datetime =
     if modo == "arquivo":
         link_arquivo = "index.html"  # índice de edições, já dentro de docs/arquivo/
         banner = (
-            f'<div class="banner-arquivo">📚 Esta é uma edição anterior '
-            f'({_data_extenso_pt(agora)}). <a href="../index.html">Ver a edição mais recente →</a></div>'
+            f'<div class="banner-arquivo">📚 Esta é uma edição anterior ({_data_extenso_pt(agora)}).'
+            f' <a href="index.html">← ver lista de edições</a>'
+            f' <span class="separador">·</span>'
+            f' <a href="../index.html">ver a mais recente →</a></div>'
         )
     else:
         link_arquivo = "arquivo/index.html"
@@ -601,7 +612,7 @@ TEMPLATE_INDICE_ARQUIVO = """<!DOCTYPE html>
 <title>Edições anteriores — Boletim Semanal de IA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F4F6FB;
@@ -623,29 +634,36 @@ TEMPLATE_INDICE_ARQUIVO = """<!DOCTYPE html>
   a.voltar {
     color: var(--accent);
     text-decoration: none;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
+    font-size: 13.5px;
+    font-weight: 500;
   }
   a.voltar:hover { text-decoration: underline; }
   h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: 600;
     margin: 20px 0 4px;
   }
-  p.subtitulo { color: var(--text-muted); margin: 0 0 28px; font-size: 14px; }
+  p.subtitulo { color: var(--text-muted); margin: 0 0 28px; font-size: 14.5px; }
   ul.lista-edicoes { list-style: none; padding: 0; margin: 0; }
   ul.lista-edicoes li {
     border: 1px solid var(--border);
     background: var(--card-bg);
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04);
+    transition: box-shadow 0.15s ease;
+  }
+  ul.lista-edicoes li:hover {
+    box-shadow: 0 4px 16px rgba(27,35,64,0.06);
   }
   ul.lista-edicoes a {
     display: block;
-    padding: 14px 18px;
+    padding: 15px 18px;
     color: var(--text);
     text-decoration: none;
     font-size: 15px;
+    font-weight: 500;
   }
   ul.lista-edicoes a:hover { color: var(--accent); }
   .vazio { color: var(--text-muted); margin-top: 20px; }
