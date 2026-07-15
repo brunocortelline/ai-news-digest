@@ -3,13 +3,16 @@
 # 'categoria' é usada para agrupar no dashboard final.
 
 feeds:
-  - nome: "OpenAI Blog"
-    url: "https://openai.com/blog/rss.xml"
+  - nome: "OpenAI News"
+    url: "https://openai.com/news/rss.xml"
     categoria: "Labs & Modelos"
 
-  - nome: "Anthropic News"
-    url: "https://www.anthropic.com/news/rss.xml"
+  - nome: "Anthropic News (comunidade)"
+    url: "https://tim-hilde.github.io/anthropic-rss/rss.xml"
     categoria: "Labs & Modelos"
+    # Nota: a Anthropic não publica um RSS oficial. Este é um feed mantido
+    # pela comunidade que espelha o blog oficial diariamente. Se um dia parar
+    # de funcionar, é só remover este item (ou trocar por outro feed).
 
   - nome: "Google AI Blog"
     url: "https://blog.google/technology/ai/rss/"
@@ -19,16 +22,18 @@ feeds:
     url: "https://techcrunch.com/category/artificial-intelligence/feed/"
     categoria: "Mercado & Negócios"
 
-  - nome: "VentureBeat AI"
-    url: "https://venturebeat.com/category/ai/feed/"
+  - nome: "VentureBeat"
+    url: "https://venturebeat.com/feed/"
     categoria: "Mercado & Negócios"
+    # Nota: a VentureBeat reposicionou o site inteiro para cobrir principalmente
+    # IA/dados/segurança, então o feed geral já vem bem focado nisso.
 
   - nome: "MIT Technology Review - AI"
-    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed"
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed/"
     categoria: "Pesquisa & Tendências"
 
   - nome: "The Verge - AI"
-    url: "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"
+    url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
     categoria: "Mercado & Negócios"
 
   - nome: "Hacker News (AI, via HN RSS)"

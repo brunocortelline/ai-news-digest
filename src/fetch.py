@@ -13,19 +13,31 @@ from pathlib import Path
 
 CONFIG_PATH = Path(__file__).parent.parent / "config" / "sources.yaml"
 
-# Padrões comuns de metadado (sem conteúdo real) em alguns feeds, ex: Hacker News
-_PADROES_METADADO = re.compile(
-    r"(?i)(article url|comments url|points|#\s*comments)\s*:?"
-)
+# Padrão de metadado do Hacker News (sem conteúdo real), ex:
+# "Article URL: ... Comments URL: ... Points: 137  # Comments: 89"
+_PADRAO_METADADO_HN = re.compile(r"(?i)points\s*:\s*\d+")
+_PADRAO_URL_HN = re.compile(r"(?i)(article url|comments url)\s*:")
 
 
-def _tem_conteudo_substancial(resumo_original: str, minimo_palavras: int = 10) -> bool:
-    """Verifica se o resumo original tem texto de verdade para resumir, e não
-    é só metadado (ex: 'Article URL: ... Comments URL: ... Points: 42')."""
-    texto = re.sub(r"https?://\S+", "", resumo_original)
-    texto = _PADROES_METADADO.sub("", texto)
-    palavras = [p for p in re.split(r"\s+", texto.strip()) if p]
-    return len(palavras) >= minimo_palavras
+def _tem_conteudo_substancial(resumo_original: str) -> bool:
+    """Verifica se o resumo original tem texto para resumir. Só descarta em
+    dois casos bem específicos: resumo vazio, ou o padrão de metadado típico
+    do Hacker News (sem o conteúdo real do artigo). Resumos curtos porém
+    legítimos de outras fontes (comuns em vários blogs) NÃO são descartados."""
+    texto = resumo_original.strip()
+    if not texto:
+        return False
+
+    texto_sem_url = re.sub(r"https?://\S+", "", texto).strip()
+
+    eh_metadado_hn = bool(_PADRAO_METADADO_HN.search(texto_sem_url)) and bool(
+        _PADRAO_URL_HN.search(texto_sem_url)
+    )
+    if eh_metadado_hn:
+        return False
+
+    palavras = [p for p in re.split(r"\s+", texto_sem_url) if p]
+    return len(palavras) >= 3
 
 
 def carregar_config():
