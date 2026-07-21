@@ -40,6 +40,16 @@ def _tem_conteudo_substancial(resumo_original: str) -> bool:
     return len(palavras) >= 3
 
 
+def _pontuacao_prioridade(item: dict, palavras_prioridade: list) -> int:
+    """Quanto maior, mais prioridade a notícia tem quando uma fonte precisa
+    ser cortada (mais itens do que o teto permite). Conta quantas palavras-
+    chave de prioridade (ex: temas de desenvolvimento com IA) aparecem no
+    título ou resumo — não é só sim/não, para desempatar entre vários itens
+    igualmente "relevantes"."""
+    texto = f"{item['titulo_original']} {item['resumo_original']}".lower()
+    return sum(1 for palavra in palavras_prioridade if palavra.lower() in texto)
+
+
 def carregar_config():
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -119,14 +129,70 @@ def buscar_noticias():
             vistos.add(a["link"])
             unicos.append(a)
 
-    # Mais recentes primeiro
+    # Mais recentes primeiro, dentro de cada fonte
     unicos.sort(
         key=lambda a: a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc),
         reverse=True,
     )
 
-    max_noticias = config.get("max_noticias", 15)
-    return unicos[:max_noticias]
+    max_noticias = config.get("max_noticias", 25)
+    max_por_fonte = config.get("max_por_fonte", 3)
+    palavras_prioridade = config.get("palavras_chave_prioridade", [])
+
+    return _selecionar_balanceado(unicos, max_noticias, max_por_fonte, palavras_prioridade)
+
+
+def _selecionar_balanceado(
+    artigos: list[dict], max_noticias: int, max_por_fonte: int, palavras_prioridade: list = None
+) -> list[dict]:
+    """Seleciona notícias garantindo diversidade de fontes: em vez de pegar
+    só as N mais recentes no total (o que deixa fontes de alto volume, como
+    Hacker News ou TechCrunch, dominarem a lista), distribui em rodadas —
+    uma notícia de cada fonte por vez — respeitando um teto por fonte.
+
+    Quando uma fonte tem mais itens do que o teto permite, os itens dessa
+    fonte são ordenados por prioridade (temas de desenvolvimento com IA,
+    configurados em 'palavras_chave_prioridade') antes de aplicar o corte —
+    ou seja, entre vários itens da mesma fonte, os mais alinhados a esse
+    tema têm preferência, não só os mais recentes."""
+    palavras_prioridade = palavras_prioridade or []
+
+    por_fonte: dict = {}
+    for artigo in artigos:
+        por_fonte.setdefault(artigo["fonte"], []).append(artigo)
+
+    # dentro de cada fonte: prioridade (temas de desenvolvimento) primeiro, depois recência
+    for fonte, itens in por_fonte.items():
+        itens.sort(
+            key=lambda a: (
+                -_pontuacao_prioridade(a, palavras_prioridade),
+                -(a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc)).timestamp(),
+            )
+        )
+
+    selecionados = []
+    indice_por_fonte = {fonte: 0 for fonte in por_fonte}
+
+    while len(selecionados) < max_noticias:
+        adicionou_algo = False
+        for fonte, itens in por_fonte.items():
+            if len(selecionados) >= max_noticias:
+                break
+            i = indice_por_fonte[fonte]
+            if i >= min(len(itens), max_por_fonte):
+                continue
+            selecionados.append(itens[i])
+            indice_por_fonte[fonte] += 1
+            adicionou_algo = True
+        if not adicionou_algo:
+            break  # todas as fontes já esgotaram seu teto
+
+    # Reordena o resultado final por data (mais recente primeiro), já com a diversidade garantida
+    selecionados.sort(
+        key=lambda a: a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc),
+        reverse=True,
+    )
+    return selecionados
 
 
 if __name__ == "__main__":

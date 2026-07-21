@@ -59,4 +59,36 @@ palavras_chave:
 janela_dias: 7
 
 # Máximo de notícias no resumo final (evita boletins gigantes)
-max_noticias: 15
+max_noticias: 25
+
+# Máximo de notícias vindas de uma mesma fonte (evita que uma fonte de alto
+# volume, como Hacker News ou TechCrunch, ocupe todas as vagas sozinha)
+max_por_fonte: 3
+
+# Quando uma fonte tem mais notícias do que "max_por_fonte" permite, estas
+# palavras-chave decidem quais entram: notícias que mencionam mais desses
+# termos (temas de desenvolvimento com IA) têm prioridade sobre as demais,
+# mesmo que não sejam as mais recentes daquela fonte.
+palavras_chave_prioridade:
+  - "developer"
+  - "desenvolvedor"
+  - "SDK"
+  - "API"
+  - "framework"
+  - "coding agent"
+  - "agente de codificação"
+  - "open source"
+  - "código aberto"
+  - "engineering"
+  - "engenharia"
+  - "build"
+  - "integration"
+  - "integração"
+  - "code generation"
+  - "geração de código"
+  - "programming"
+  - "programação"
+  - "IDE"
+  - "copilot"
+  - "software development"
+  - "desenvolvimento de software"
