@@ -1,6 +1,6 @@
-# Fontes de notícias sobre IA.
+# Fontes de notícias sobre IA (boletim geral: modelos, mercado, comunidade dev).
 # Adicione/remova feeds aqui sem precisar tocar em código.
-# 'categoria' é usada para agrupar no dashboard final.
+# 'categoria' é usada para agrupar/colorir no dashboard final.
 
 feeds:
   - nome: "OpenAI News"
@@ -41,7 +41,6 @@ feeds:
     categoria: "Comunidade & Devs"
 
 # Palavras-chave usadas para filtrar itens relevantes de feeds mais genéricos
-# (não é necessário para feeds que já são 100% sobre IA, mas ajuda a limpar ruído)
 palavras_chave:
   - "AI"
   - "artificial intelligence"

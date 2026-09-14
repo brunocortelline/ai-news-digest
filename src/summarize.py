@@ -25,9 +25,8 @@ Para cada notícia recebida (título e resumo original, possivelmente em inglês
 IMPORTANTE: às vezes o "resumo original" recebido é só metadado (ex: link do artigo,
 número de pontos/comentários no Hacker News), sem o conteúdo real do texto. Nesses casos,
 NUNCA se recuse e NUNCA explique a limitação — gere o melhor resumo possível baseado
-apenas no título, de forma honesta e direta (ex: "O título sugere uma discussão sobre
-X; é uma indicação popular na comunidade, mas o conteúdo completo não foi analisado.").
-Sempre produza os três campos, mesmo que de forma mais genérica.
+apenas no título, de forma honesta e direta. Sempre produza os três campos, mesmo que
+de forma mais genérica.
 
 Responda SEMPRE e SOMENTE em JSON válido, sem markdown, sem crases, sem texto antes ou
 depois, exatamente neste formato:
@@ -41,8 +40,6 @@ LEMBRETE_FORMATO = (
 
 
 def _extrair_json(texto: str):
-    """Tenta interpretar o texto como JSON. Se falhar, tenta extrair o primeiro
-    bloco { ... } do texto (caso o modelo tenha adicionado algo antes/depois)."""
     texto = texto.strip()
     try:
         return json.loads(texto)
@@ -61,7 +58,7 @@ def _extrair_json(texto: str):
 def _chamar_modelo(conteudo_usuario: str, reforcar_formato: bool = False) -> str:
     mensagens = [{"role": "user", "content": conteudo_usuario}]
     if reforcar_formato:
-        mensagens.append({"role": "assistant", "content": "{"})  # induz a começar direto pelo JSON
+        mensagens.append({"role": "assistant", "content": "{"})
 
     resposta = client.messages.create(
         model=MODELO,
@@ -92,13 +89,10 @@ def resumir_e_traduzir(artigo: dict):
     dados = _extrair_json(texto)
 
     if dados is None:
-        # segunda tentativa: força o modelo a começar a resposta já com "{"
         texto_retry = _chamar_modelo(conteudo_usuario, reforcar_formato=True)
         dados = _extrair_json(texto_retry)
 
     if dados is None:
-        # não conseguimos gerar um resumo confiável nem na segunda tentativa —
-        # melhor descartar o item do que mostrar um card com aviso de erro
         print(f"[aviso] descartando item sem resumo confiável: '{artigo['titulo_original']}'")
         return None
 
@@ -106,7 +100,7 @@ def resumir_e_traduzir(artigo: dict):
     return artigo_traduzido
 
 
-def processar_lista(artigos: list[dict]) -> list[dict]:
+def processar_lista(artigos: list) -> list:
     processados = []
     for artigo in artigos:
         try:

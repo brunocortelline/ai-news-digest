@@ -1,0 +1,87 @@
+# Fontes de notícias sobre IA aplicada a produtos/indústrias — o que empresas
+# estão desenvolvendo e aplicando na prática (não pesquisa/modelos em si).
+# Adicione/remova feeds aqui sem precisar tocar em código.
+
+feeds:
+  - nome: "TechCrunch AI"
+    url: "https://techcrunch.com/category/artificial-intelligence/feed/"
+    categoria: "Empresas de Tecnologia"
+
+  - nome: "VentureBeat"
+    url: "https://venturebeat.com/feed/"
+    categoria: "Empresas de Tecnologia"
+
+  - nome: "Fierce Healthcare"
+    url: "https://www.fiercehealthcare.com/rss/xml"
+    categoria: "Saúde"
+
+  - nome: "Finextra"
+    url: "https://www.finextra.com/rss/headlines.aspx"
+    categoria: "Financeiro"
+
+  - nome: "Utility Dive"
+    url: "https://utilitydive.com/feeds/news"
+    categoria: "Energia"
+
+# Palavras-chave usadas para filtrar itens relevantes (precisa falar de IA
+# aplicada, não só do setor em si)
+palavras_chave:
+  - "AI"
+  - "artificial intelligence"
+  - "inteligência artificial"
+  - "LLM"
+  - "machine learning"
+  - "GPT"
+  - "Claude"
+  - "Gemini"
+  - "agentic"
+  - "agente de IA"
+  - "algorithm"
+  - "algoritmo"
+  - "automation"
+  - "automação"
+
+# Quantos dias para trás considerar na busca semanal
+janela_dias: 7
+
+# Máximo de notícias no resumo final (mesma quantidade do boletim geral)
+max_noticias: 25
+
+# Máximo de notícias vindas de uma mesma fonte
+max_por_fonte: 3
+
+# Quando uma fonte tem mais notícias do que "max_por_fonte" permite, estas
+# palavras-chave decidem quais entram: notícias sobre saúde, financeiro e
+# energia têm prioridade (temas explicitamente pedidos), além de notícias
+# de empresas de tecnologia (que já são o foco natural da maioria das fontes).
+palavras_chave_prioridade:
+  - "health"
+  - "saúde"
+  - "hospital"
+  - "healthcare"
+  - "clínica"
+  - "diagnóstico"
+  - "diagnosis"
+  - "patient"
+  - "paciente"
+  - "financial"
+  - "financeiro"
+  - "banking"
+  - "bancário"
+  - "fintech"
+  - "payments"
+  - "pagamentos"
+  - "investment"
+  - "investimento"
+  - "fraud"
+  - "fraude"
+  - "energy"
+  - "energia"
+  - "grid"
+  - "rede elétrica"
+  - "utility"
+  - "utilidade pública"
+  - "renewable"
+  - "renovável"
+  - "power"
+  - "elétrica"

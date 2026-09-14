@@ -1,7 +1,10 @@
 """
-Busca notícias de IA a partir dos feeds RSS configurados em config/sources.yaml.
-Filtra por janela de tempo e palavras-chave, e devolve uma lista de artigos crus
-(ainda em inglês/original) prontos para serem resumidos e traduzidos.
+Busca notícias a partir dos feeds RSS configurados em um arquivo YAML (por
+padrão, config/sources.yaml — o boletim geral de IA; mas aceita qualquer
+outro config, como config/sources_produtos.yaml, para a aba de produtos).
+Filtra por janela de tempo, palavras-chave e conteúdo substancial, e seleciona
+um conjunto final balanceado entre fontes, priorizando temas configurados
+quando uma fonte tem mais itens do que o teto permite.
 """
 
 import time
@@ -11,7 +14,7 @@ import feedparser
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-CONFIG_PATH = Path(__file__).parent.parent / "config" / "sources.yaml"
+CONFIG_PATH_PADRAO = Path(__file__).parent.parent / "config" / "sources.yaml"
 
 # Padrão de metadado do Hacker News (sem conteúdo real), ex:
 # "Article URL: ... Comments URL: ... Points: 137  # Comments: 89"
@@ -43,20 +46,19 @@ def _tem_conteudo_substancial(resumo_original: str) -> bool:
 def _pontuacao_prioridade(item: dict, palavras_prioridade: list) -> int:
     """Quanto maior, mais prioridade a notícia tem quando uma fonte precisa
     ser cortada (mais itens do que o teto permite). Conta quantas palavras-
-    chave de prioridade (ex: temas de desenvolvimento com IA) aparecem no
-    título ou resumo — não é só sim/não, para desempatar entre vários itens
-    igualmente "relevantes"."""
+    chave de prioridade aparecem no título ou resumo — não é só sim/não,
+    para desempatar entre vários itens igualmente "relevantes"."""
     texto = f"{item['titulo_original']} {item['resumo_original']}".lower()
     return sum(1 for palavra in palavras_prioridade if palavra.lower() in texto)
 
 
-def carregar_config():
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+def carregar_config(config_path: Path = None) -> dict:
+    caminho = config_path or CONFIG_PATH_PADRAO
+    with open(caminho, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
 def _entry_para_dict(entry, fonte, categoria):
-    # feedparser normaliza datas em 'published_parsed' (struct_time) quando disponível
     data_publicacao = None
     if getattr(entry, "published_parsed", None):
         data_publicacao = datetime.fromtimestamp(
@@ -67,7 +69,6 @@ def _entry_para_dict(entry, fonte, categoria):
 
     link = getattr(entry, "link", "") or ""
     if not link.startswith("http"):
-        # fallback: alguns feeds trazem o link em 'id' quando 'link' vem vazio/malformado
         candidato = getattr(entry, "id", "") or ""
         if candidato.startswith("http"):
             link = candidato
@@ -87,8 +88,8 @@ def _e_relevante(item, palavras_chave):
     return any(palavra.lower() in texto for palavra in palavras_chave)
 
 
-def buscar_noticias():
-    config = carregar_config()
+def buscar_noticias(config_path: Path = None) -> list:
+    config = carregar_config(config_path)
     janela = timedelta(days=config.get("janela_dias", 7))
     limite_data = datetime.now(timezone.utc) - janela
     palavras_chave = config.get("palavras_chave", [])
@@ -109,7 +110,6 @@ def buscar_noticias():
         for entry in feed.entries:
             item = _entry_para_dict(entry, nome, categoria)
 
-            # Se não há data, mantemos o item (alguns feeds não populam a data)
             if item["data_publicacao"] and item["data_publicacao"] < limite_data:
                 continue
 
@@ -129,7 +129,6 @@ def buscar_noticias():
             vistos.add(a["link"])
             unicos.append(a)
 
-    # Mais recentes primeiro, dentro de cada fonte
     unicos.sort(
         key=lambda a: a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc),
         reverse=True,
@@ -143,25 +142,24 @@ def buscar_noticias():
 
 
 def _selecionar_balanceado(
-    artigos: list[dict], max_noticias: int, max_por_fonte: int, palavras_prioridade: list = None
-) -> list[dict]:
+    artigos: list, max_noticias: int, max_por_fonte: int, palavras_prioridade: list = None
+) -> list:
     """Seleciona notícias garantindo diversidade de fontes: em vez de pegar
-    só as N mais recentes no total (o que deixa fontes de alto volume, como
-    Hacker News ou TechCrunch, dominarem a lista), distribui em rodadas —
-    uma notícia de cada fonte por vez — respeitando um teto por fonte.
+    só as N mais recentes no total (o que deixa fontes de alto volume
+    dominarem a lista), distribui em rodadas — uma notícia de cada fonte por
+    vez — respeitando um teto por fonte.
 
     Quando uma fonte tem mais itens do que o teto permite, os itens dessa
-    fonte são ordenados por prioridade (temas de desenvolvimento com IA,
-    configurados em 'palavras_chave_prioridade') antes de aplicar o corte —
-    ou seja, entre vários itens da mesma fonte, os mais alinhados a esse
-    tema têm preferência, não só os mais recentes."""
+    fonte são ordenados por prioridade (temas configurados em
+    'palavras_chave_prioridade') antes de aplicar o corte — ou seja, entre
+    vários itens da mesma fonte, os mais alinhados a esses temas têm
+    preferência, não só os mais recentes."""
     palavras_prioridade = palavras_prioridade or []
 
     por_fonte: dict = {}
     for artigo in artigos:
         por_fonte.setdefault(artigo["fonte"], []).append(artigo)
 
-    # dentro de cada fonte: prioridade (temas de desenvolvimento) primeiro, depois recência
     for fonte, itens in por_fonte.items():
         itens.sort(
             key=lambda a: (
@@ -185,9 +183,8 @@ def _selecionar_balanceado(
             indice_por_fonte[fonte] += 1
             adicionou_algo = True
         if not adicionou_algo:
-            break  # todas as fontes já esgotaram seu teto
+            break
 
-    # Reordena o resultado final por data (mais recente primeiro), já com a diversidade garantida
     selecionados.sort(
         key=lambda a: a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc),
         reverse=True,
