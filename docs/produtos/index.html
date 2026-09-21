@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicações de IA por Setor — 14 de setembro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">🏭 Aplicações de IA por Setor</span>
+      <a class="tab" href="../index.html">📡 Boletim de IA</a>
+    </nav>
+    
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Aplicações de IA por Setor</h1>
+      </div>
+      <p class="subtitulo">edição de 14 de setembro de 2026 · 12 notícias captadas · <a class="link-arquivo" href="arquivo/index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "iOS 27 finalmente torna a Siri útil de novo", "resumo": "Após anos de atrasos, a Apple lançou uma reformulação completa da Siri no iOS 27, tornando a assistente mais responsiva e relevante no dia a dia. O autor relata que voltou a usar o assistente com frequência, algo que não acontecia há tempos.", "por_que_importa": "Se a Apple recuperar terreno em IA no ecossistema iOS, isso pressiona concorrentes e abre espaço para integrações de terceiros com uma Siri mais capaz.", "link": "https://techcrunch.com/2026/09/14/with-ios-27-im-actually-using-siri-again/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "14/09/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Microsoft cria 'código de conduta' para IA não enganar humanos", "resumo": "A Microsoft divulgou diretrizes de conduta para seus modelos de IA, proibindo comportamentos como hackear sistemas ou manipular usuários. O documento estabelece princípios gerais, como priorizar o suporte aos humanos em vez de substituí-los, além de restrições técnicas específicas para garantir segurança.", "por_que_importa": "Empresas que desenvolvem ou integram IA precisarão observar esse tipo de governança como referência de mercado, antecipando exigências regulatórias e de confiança que podem impactar contratos e parcerias.", "link": "https://techcrunch.com/2026/09/14/microsofts-new-ai-code-of-conduct-tells-models-not-to-hack-systems-or-trick-humans/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "14/09/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "TechCrunch Disrupt 2026 debate: e quando a OpenAI copia seu produto?", "resumo": "O TechCrunch Disrupt 2026 trará uma sessão interativa no Builders Stage sobre o risco existencial de startups de IA cujo diferencial pode ser absorvido por modelos de fundação como os da OpenAI. A discussão foca em como empresas podem continuar gerando valor mesmo com a evolução constante desses modelos.", "por_que_importa": "É um alerta estratégico para empresas que constroem produtos sobre LLMs de terceiros: a defensabilidade precisa vir de dados, distribuição ou experiência do usuário, não apenas de features replicáveis pelo próprio fornecedor do modelo.", "link": "https://techcrunch.com/2026/09/14/only-at-techcrunch-disrupt-2026-what-happens-when-openai-ships-your-roadmap/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "14/09/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "SmartTrade lança plataforma de pós-negociação com IA", "resumo": "A smartTrade Technologies anunciou o lançamento do smartTrade Flow, uma plataforma completa de pós-negociação que integra execução no front-office, controles no middle-office e cumprimento no back-office. A solução visa unificar todo o ciclo de vida da negociação multiativos em um único fluxo automatizado.", "por_que_importa": "Plataformas que unificam front-to-back reduzem custos operacionais e riscos de reconciliação, um diferencial competitivo relevante para fintechs e instituições financeiras que buscam eficiência em trading eletrônico.", "link": "https://www.finextra.com/pressarticle/110897/smarttrade-launches-post-trade-platform?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "14/09/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Sokin lança conector MCP para pagamentos com IA", "resumo": "A Sokin, plataforma financeira global, lançou um conector baseado no Model Context Protocol (MCP) que conecta sua infraestrutura de pagamentos licenciada diretamente às ferramentas de IA dos clientes. A iniciativa permite que agentes de IA iniciem e gerenciem transações financeiras de forma nativa, sem integrações complexas.", "por_que_importa": "Mostra a corrida das fintechs para se tornarem infraestrutura padrão em fluxos de trabalho agênticos, abrindo caminho para produtos que automatizam pagamentos B2B via IA.", "link": "https://www.finextra.com/pressarticle/110892/sokin-launches-mcp-connector?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "14/09/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Pave capta US$ 15 milhões para plataforma de gestão de portfólio com IA", "resumo": "A Pave Finance, startup que oferece gestão de portfólio com IA para assessores financeiros, levantou mais de US$ 15 milhões em uma rodada Série A com alta demanda de investidores. A avaliação pré-money da empresa ficou em US$ 100 milhões.", "por_que_importa": "O investimento reforça a tendência de IA aplicada à gestão de patrimônio, abrindo espaço para soluções similares no mercado financeiro brasileiro focadas em assessoria automatizada.", "link": "https://www.finextra.com/newsarticle/48389/pave-raises-15m-for-ai-powered-portfolio-management-platform?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "14/09/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Justiça dos EUA barra ordem do DOE que adiava fechamento de usina a carvão", "resumo": "Um tribunal de apelações dos EUA rejeitou uma ordem 'emergencial' do Departamento de Energia que tentava adiar a aposentadoria de uma usina a carvão. A corte considerou que o governo extrapolou sua autoridade, alertando que essa interpretação ampla de 'emergência' abre espaço para intervenções federais recorrentes sem base legal sólida.", "por_que_importa": "A decisão reforça limites regulatórios ao poder executivo sobre o setor energético, sinalizando maior previsibilidade para investidores em transição energética e projetos de geração renovável no mercado americano.", "link": "https://www.utilitydive.com/news/appeals-court-vacates-doe-emergency-order-michigan-power-plant/830189/", "fonte": "Utility Dive", "categoria": "Energia", "data": "11/09/2026", "cor": "#C99A1E", "selo_bg": "#FBF1D6", "selo_texto": "#7A5E10"}, {"titulo": "Independência do operador da rede é vital em crises energéticas", "resumo": "Um artigo de opinião do NYISO destaca como o apagão da linha Champlain Hudson Power Express neste verão reforçou a importância de um operador de rede independente. Zach Smith, VP de planejamento de sistema e recursos do NYISO, argumenta que essa autonomia é essencial para garantir respostas rápidas e imparciais em momentos de estresse na rede elétrica.", "por_que_importa": "Para empresas de tecnologia que atuam em infraestrutura crítica e energia, o caso reforça a demanda por sistemas de governança independentes e resilientes diante de falhas em ativos de transmissão de grande escala.", "link": "https://www.utilitydive.com/news/nyisos-independence-is-critical-when-the-grid-is-stressed/829319/", "fonte": "Utility Dive", "categoria": "Energia", "data": "11/09/2026", "cor": "#C99A1E", "selo_bg": "#FBF1D6", "selo_texto": "#7A5E10"}, {"titulo": "Google financia usina virtual de energia da PG&E", "resumo": "O programa SHARE, apoiado financeiramente pelo Google, funciona como prova de conceito para capacidade de energia distribuída financiada por empresas privadas. A PG&E afirma que a iniciativa pode futuramente se expandir para incluir recursos comerciais, industriais e de escala de serviço público.", "por_que_importa": "Mostra como big techs estão investindo diretamente em infraestrutura energética para garantir suprimento confiável às operações de data centers e IA, abrindo espaço para parcerias público-privadas inovadoras no setor elétrico.", "link": "https://www.utilitydive.com/news/google-virtual-power-plant-vpp-pge/830036/", "fonte": "Utility Dive", "categoria": "Energia", "data": "10/09/2026", "cor": "#C99A1E", "selo_bg": "#FBF1D6", "selo_texto": "#7A5E10"}, {"titulo": "Abridge entra em ciclo de receita com revisão de faturas por IA", "resumo": "A Abridge, startup de documentação clínica com IA, expandiu sua atuação para o ciclo de receita hospitalar. A nova funcionalidade permite revisão pré-faturamento, voltada para equipes de integridade documental, codificação médica e gestão de receita.", "por_que_importa": "Mostra como fornecedores de IA clínica estão migrando de nicho para funções financeiras críticas, ampliando receita e criando barreiras competitivas mais amplas no setor de saúde.", "link": "https://www.fiercehealthcare.com/ai-and-machine-learning/abridge-expands-revenue-cycle-ai-powered-pre-bill-claim-review", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "Anomaly Insights e Inova Health se unem em IA para gestão de receita", "resumo": "A parceria entre Anomaly Insights e Inova Health visa aplicar inteligência artificial ao ciclo de receita (RCM) na área da saúde. A Anomaly fornecerá dados e analytics adicionais para que a Inova avalie o comportamento de operadoras de planos de saúde e os resultados de pagamentos.", "por_que_importa": "Mostra como IA aplicada a dados financeiros pode otimizar processos administrativos complexos na saúde, um caminho replicável para setores com alta fricção em pagamentos e conformidade.", "link": "https://www.fiercehealthcare.com/ai-and-machine-learning/anomaly-insights-inova-health-announce-collaboration-ai-powered-rcm", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "Novos limites de pagamento devem reduzir gastos estaduais com Medicaid", "resumo": "Um estudo aponta que os limites estatutários da OBBBA sobre pagamentos direcionados pelos estados (SDPs) devem cortar dezenas de bilhões de dólares dos gastos estaduais com Medicaid. Em 17 estados mais afetados, a redução pode representar entre 10% e 25% do gasto total anual com o programa.", "por_que_importa": "Empresas de tecnologia em saúde que atendem sistemas públicos americanos precisam monitorar esses cortes, pois podem impactar diretamente orçamentos de clientes e a demanda por soluções de eficiência de custos em Medicaid.", "link": "https://www.fiercehealthcare.com/providers/obbbas-state-directed-payment-caps-will-trim-some-states-medicaid-spend-quarter-study", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Empresas de Tecnologia", "cor": "#5A7CB0"}, {"nome": "Financeiro", "cor": "#3B6FD4"}, {"nome": "Energia", "cor": "#C99A1E"}, {"nome": "Saúde", "cor": "#2FA65A"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-aplicaçõesdeiaporsetor';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>
