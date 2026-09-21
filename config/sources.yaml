@@ -40,9 +40,20 @@ feeds:
     url: "https://hnrss.org/newest?q=AI+OR+LLM+OR+%22artificial+intelligence%22"
     categoria: "Comunidade & Devs"
 
+  - nome: "Canaltech"
+    url: "https://feeds2.feedburner.com/canaltechbr"
+    categoria: "Brasil"
+    # Feed geral do Canaltech (todas as editorias) — o filtro de palavras-chave
+    # abaixo já cuida de selecionar só o que for relevante sobre IA.
+
+  - nome: "Tecnoblog"
+    url: "https://tecnoblog.net/feed"
+    categoria: "Brasil"
+
 # Palavras-chave usadas para filtrar itens relevantes de feeds mais genéricos
 palavras_chave:
   - "AI"
+  - "IA"
   - "artificial intelligence"
   - "inteligência artificial"
   - "LLM"
@@ -91,3 +102,7 @@ palavras_chave_prioridade:
   - "copilot"
   - "software development"
   - "desenvolvimento de software"
+  - "Brasil"
+  - "Brazil"
+  - "brasileira"
+  - "brasileiro"

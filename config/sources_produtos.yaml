@@ -23,10 +23,21 @@ feeds:
     url: "https://utilitydive.com/feeds/news"
     categoria: "Energia"
 
+  - nome: "Canaltech"
+    url: "https://feeds2.feedburner.com/canaltechbr"
+    categoria: "Brasil"
+    # Feed geral do Canaltech — o filtro de palavras-chave seleciona o que
+    # for relevante sobre saúde, financeiro, energia ou empresas de tech.
+
+  - nome: "Tecnoblog"
+    url: "https://tecnoblog.net/feed"
+    categoria: "Brasil"
+
 # Palavras-chave usadas para filtrar itens relevantes (precisa falar de IA
 # aplicada, não só do setor em si)
 palavras_chave:
   - "AI"
+  - "IA"
   - "artificial intelligence"
   - "inteligência artificial"
   - "LLM"
@@ -85,3 +96,7 @@ palavras_chave_prioridade:
   - "renovável"
   - "power"
   - "elétrica"
+  - "Brasil"
+  - "Brazil"
+  - "brasileira"
+  - "brasileiro"

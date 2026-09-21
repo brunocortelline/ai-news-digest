@@ -85,7 +85,19 @@ def _entry_para_dict(entry, fonte, categoria):
 
 def _e_relevante(item, palavras_chave):
     texto = f"{item['titulo_original']} {item['resumo_original']}".lower()
-    return any(palavra.lower() in texto for palavra in palavras_chave)
+    for palavra in palavras_chave:
+        p = palavra.lower()
+        if " " in p:
+            # frase com mais de uma palavra: substring simples já é seguro
+            # (ex: "inteligência artificial", "machine learning")
+            if p in texto:
+                return True
+        else:
+            # palavra única/sigla: precisa de borda de palavra, senão "AI"
+            # daria match em "air fryer", "praia" etc, e "IA" em "companhia"
+            if re.search(rf"\b{re.escape(p)}\b", texto):
+                return True
+    return False
 
 
 def buscar_noticias(config_path: Path = None) -> list:
