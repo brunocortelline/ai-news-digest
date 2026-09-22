@@ -12,7 +12,7 @@ Requer a variável de ambiente ANTHROPIC_API_KEY configurada.
 import sys
 from pathlib import Path
 
-from fetch import buscar_noticias
+from fetch import buscar_noticias, carregar_links_usados
 from summarize import processar_lista
 from generate_html import publicar, SITE_BOLETIM, SITE_PRODUTOS
 
@@ -21,7 +21,12 @@ CONFIG_PATH = Path(__file__).parent.parent / "config" / "sources_produtos.yaml"
 
 def main():
     print("[Aplicações de IA por Setor] Buscando notícias...")
-    noticias = buscar_noticias(config_path=CONFIG_PATH)
+
+    links_ja_usados = carregar_links_usados()
+    if links_ja_usados:
+        print(f"  Excluindo {len(links_ja_usados)} notícias já usadas no boletim geral.")
+
+    noticias = buscar_noticias(config_path=CONFIG_PATH, links_excluir=links_ja_usados)
     print(f"  {len(noticias)} notícias relevantes encontradas.")
 
     if not noticias:

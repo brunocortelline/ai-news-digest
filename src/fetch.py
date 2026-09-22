@@ -9,12 +9,42 @@ quando uma fonte tem mais itens do que o teto permite.
 
 import time
 import re
+import json
 import yaml
 import feedparser
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 CONFIG_PATH_PADRAO = Path(__file__).parent.parent / "config" / "sources.yaml"
+
+# Arquivo temporário (não versionado) usado para evitar que a mesma notícia
+# apareça duplicada nas duas abas do projeto. A aba que roda primeiro (o
+# boletim geral, no workflow) salva aqui os links que usou; a aba seguinte
+# (produtos) lê esse arquivo e exclui esses links da própria seleção.
+CACHE_DIR = Path(__file__).parent.parent / ".cache"
+LINKS_USADOS_CACHE = CACHE_DIR / "links_usados_semana.json"
+
+
+def salvar_links_usados(artigos: list, caminho: Path = LINKS_USADOS_CACHE) -> None:
+    """Salva os links dos artigos selecionados por uma aba, para que a
+    próxima aba a rodar possa excluí-los da própria seleção."""
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    links = [a["link"] for a in artigos if a.get("link")]
+    with open(caminho, "w", encoding="utf-8") as f:
+        json.dump(links, f)
+
+
+def carregar_links_usados(caminho: Path = LINKS_USADOS_CACHE) -> set:
+    """Carrega os links já usados por uma aba anterior nesta mesma execução.
+    Se o arquivo não existir (ex: rodando só esta aba isoladamente, sem ter
+    rodado a outra antes), simplesmente não exclui nada."""
+    if not caminho.exists():
+        return set()
+    try:
+        with open(caminho, "r", encoding="utf-8") as f:
+            return set(json.load(f))
+    except (json.JSONDecodeError, OSError):
+        return set()
 
 # Padrão de metadado do Hacker News (sem conteúdo real), ex:
 # "Article URL: ... Comments URL: ... Points: 137  # Comments: 89"
@@ -100,11 +130,12 @@ def _e_relevante(item, palavras_chave):
     return False
 
 
-def buscar_noticias(config_path: Path = None) -> list:
+def buscar_noticias(config_path: Path = None, links_excluir: set = None) -> list:
     config = carregar_config(config_path)
     janela = timedelta(days=config.get("janela_dias", 7))
     limite_data = datetime.now(timezone.utc) - janela
     palavras_chave = config.get("palavras_chave", [])
+    links_excluir = links_excluir or set()
 
     artigos = []
 
@@ -140,6 +171,13 @@ def buscar_noticias(config_path: Path = None) -> list:
         if a["link"] not in vistos:
             vistos.add(a["link"])
             unicos.append(a)
+
+    # Remove links já usados por outra aba nesta mesma execução (evita a
+    # mesma notícia aparecer duplicada no boletim geral e na aba de produtos).
+    # Se sobrar menos notícias do que o teto de max_noticias, tudo bem —
+    # é melhor publicar com menos do que repetir conteúdo.
+    if links_excluir:
+        unicos = [a for a in unicos if a["link"] not in links_excluir]
 
     unicos.sort(
         key=lambda a: a["data_publicacao"] or datetime.min.replace(tzinfo=timezone.utc),

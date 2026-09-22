@@ -10,7 +10,7 @@ Requer a variável de ambiente ANTHROPIC_API_KEY configurada.
 """
 
 import sys
-from fetch import buscar_noticias
+from fetch import buscar_noticias, salvar_links_usados
 from summarize import processar_lista
 from generate_html import publicar, SITE_BOLETIM, SITE_PRODUTOS
 
@@ -27,6 +27,10 @@ def main():
     print("Resumindo e traduzindo com a API da Claude...")
     processadas = processar_lista(noticias)
     print(f"  {len(processadas)} notícias processadas com sucesso.")
+
+    # Salva os links usados aqui para a aba de produtos (que roda depois)
+    # não repetir as mesmas notícias.
+    salvar_links_usados(processadas)
 
     print("Gerando e publicando o dashboard...")
     publicar(processadas, site=SITE_BOLETIM, outro_site=SITE_PRODUTOS)
