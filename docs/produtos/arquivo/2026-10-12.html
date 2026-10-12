@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicações de IA por Setor — 12 de outubro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">🏭 Aplicações de IA por Setor</span>
+      <a class="tab" href="../../index.html">📡 Boletim de IA</a>
+    </nav>
+    <div class="banner-arquivo">📚 Esta é uma edição anterior (12 de outubro de 2026). <a href="index.html">← ver lista de edições</a> <span class="separador">·</span> <a href="../index.html">ver a mais recente →</a></div>
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Aplicações de IA por Setor</h1>
+      </div>
+      <p class="subtitulo">edição de 12 de outubro de 2026 · 15 notícias captadas · <a class="link-arquivo" href="index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "Startup WindBorne fecha contrato de US$ 50 mi com Força Aérea dos EUA", "resumo": "A WindBorne, startup do Vale do Silício que usa balões meteorológicos e IA para prever o clima, venceu um contrato militar com a Força Aérea americana avaliado em quase US$ 50 milhões. A empresa combina coleta de dados atmosféricos em tempo real com modelos de previsão baseados em inteligência artificial.", "por_que_importa": "Mostra como startups de hardware com IA embarcada estão conquistando contratos governamentais estratégicos, abrindo caminho para parcerias público-privadas em dados climáticos e defesa.", "link": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "12/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Galaxy Buds 4 atinge menor preço histórico com 45% de desconto", "resumo": "Os fones Galaxy Buds 4, com cancelamento de ruído ativo, áudio Hi-Fi de 24 bits e recursos de IA, estão sendo vendidos com 45% de desconto no Mercado Livre via Pix com cupom. É o menor valor já registrado para o produto.", "por_que_importa": "Promoções agressivas em wearables com IA embarcada pressionam concorrentes a acelerar diferenciação por software, não só hardware, no segmento de áudio inteligente.", "link": "https://tecnoblog.net/achados/galaxy-buds-4-nunca-esteve-tao-barato-45-off-no-mercado-livre/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "12/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Honeyjar usa IA para modernizar relações públicas nas empresas", "resumo": "A startup Honeyjar lançou ferramentas de IA voltadas para melhorar os processos de assessoria de imprensa e comunicação corporativa. A proposta é tornar mais eficiente um setor frequentemente criticado por jornalistas e profissionais da área como ultrapassado e pouco ágil.", "por_que_importa": "Empresas de tecnologia podem usar essas ferramentas para reduzir custos com agências de PR e ganhar velocidade na comunicação estratégica com mídia e stakeholders.", "link": "https://techcrunch.com/2026/10/12/honeyjar-offers-ai-tools-to-improve-pr-and-comms-at-every-company/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "12/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Startup de IA gera plantas de construção prontas para licenciamento em minutos", "resumo": "A Blueprints AI, startup autofinanciada de Santa Monica, criou um software que transforma fotos, PDFs ou esboços em plantas de construção compatíveis com normas técnicas. O sistema promete acelerar drasticamente o processo de elaboração de projetos que normalmente levaria semanas com arquitetos e desenhistas.", "por_que_importa": "Automatizar etapas burocráticas e técnicas do setor de construção civil pode abrir espaço para novos modelos de negócio em proptech e reduzir custos de entrada para pequenos construtores e escritórios de arquitetura.", "link": "https://techcrunch.com/2026/10/12/this-ai-startup-says-it-can-generate-permit-ready-blueprints-in-minutes/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "12/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Apple deve lançar hub smart home em parceria com LG", "resumo": "A Apple se prepara para um evento com foco em casa conectada, trazendo um novo smart hub desenvolvido em parceria com a LG. A expectativa é que a linha também traga atualizações nos dispositivos integrados à Siri com IA.", "por_que_importa": "Mostra a Apple acelerando sua estratégia de ecossistema smart home com IA embarcada, abrindo espaço de competição direta com Amazon e Google nesse mercado.", "link": "https://tecnoblog.net/noticias/apple-deve-lancar-smart-hub-veja-o-que-esperar-de-evento/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "12/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Microsoft lança Maia 300, chip de IA mais eficiente em energia", "resumo": "A Microsoft apresentou o Maia 300, novo chip de IA para servidores que processa 40% mais tokens por megawatt do que GPUs tradicionais. Voltado para inferência, ele é otimizado para conversas longas, raciocínio complexo e agentes autônomos que executam múltiplas ações em sequência, usando chiplets fabricados no processo N2P da TSMC.", "por_que_importa": "Ganhos de eficiência energética em inferência reduzem custos operacionais de IA em escala, tornando aplicações como copilotos e agentes mais viáveis economicamente para empresas que dependem de infraestrutura em nuvem.", "link": "https://canaltech.com.br/inteligencia-artificial/maia-300-novo-chip-da-microsoft-promete-mais-ia-sem-gastar-mais-energia/", "fonte": "Canaltech", "categoria": "Brasil", "data": "12/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "IA Agêntica exige nova arquitetura de infraestrutura de TI", "resumo": "A ascensão da IA agêntica, com múltiplos agentes autônomos coordenando tarefas, está mudando radicalmente os requisitos de hardware das empresas. A proporção tradicional de 1 CPU para 4-8 GPUs está migrando para algo próximo de 1:1, já que esses agentes exigem mais poder de processamento central para orquestração, chamadas de API e execução de código em paralelo às GPUs.", "por_que_importa": "Empresas que planejam adotar IA agêntica precisarão revisar investimentos em data centers e infraestrutura, já que os modelos de dimensionamento atuais podem gerar gargalos de CPU e custos subestimados.", "link": "https://canaltech.com.br/inteligencia-artificial/a-ia-agentica-e-a-reconfiguracao-oculta-da-infraestrutura-de-ti/", "fonte": "Canaltech", "categoria": "Brasil", "data": "12/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Pagamentos autônomos: como IA vai transformar as finanças", "resumo": "No Sibos 2026, executivo da Coinbase discute novos protocolos agentic e infraestrutura segura, desenvolvidos em parceria com a AWS, voltados para viabilizar pagamentos autônomos feitos por IA. A proposta é criar uma base técnica confiável para que agentes de IA possam executar transações financeiras sem intervenção humana direta.", "por_que_importa": "Empresas de pagamentos e fintechs precisam acompanhar esses padrões emergentes para não ficarem para trás na próxima geração de infraestrutura financeira baseada em agentes autônomos.", "link": "https://www.finextra.com/videoarticle/3609/agentic-payments-how-will-ai-protocols-transform-finance?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "12/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Veryfi lança suíte de prevenção a fraudes com IA", "resumo": "A Veryfi anunciou a disponibilidade geral de sua Fraud Detection & Prevention Suite, uma plataforma configurável e API-first que detecta documentos, cheques, recibos e faturas fraudulentas em tempo real. A solução atua em fluxos de contas a pagar, gestão de despesas e verificação de identidade.", "por_que_importa": "Empresas que lidam com processamento de documentos financeiros podem reduzir perdas por fraude e acelerar automação de back-office integrando essa camada de verificação via API.", "link": "https://www.finextra.com/pressarticle/111219/veryfi-launches-ai-powered-fraud-prevention-tools?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "12/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "6 filmes que geraram hype mas flopraram nos cinemas", "resumo": "O Canaltech listou seis produções cinematográficas que, apesar da forte divulgação e expectativa criada, não corresponderam ao desempenho esperado nas bilheterias. O destaque é 'Digger', novo filme de Tom Cruise dirigido por Alejandro González Iñárritu, apontado como um dos maiores fracassos recentes da Warner Bros. Pictures.", "por_que_importa": "Mostra como investimentos pesados em marketing e talento consagrado não garantem retorno financeiro, um alerta relevante para estratégias de lançamento e gestão de expectativas em qualquer indústria de entretenimento e mídia.", "link": "https://canaltech.com.br/entretenimento/filmes-que-prometeram-muito-e-floparam-estreia-cinemas/", "fonte": "Canaltech", "categoria": "Brasil", "data": "11/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "TV TCL C7L 65\" com Mini LED e Gemini tem preço recorde no Magalu", "resumo": "A Smart TV TCL C7L de 65 polegadas, que conta com painel Mini LED voltado para jogos e assistente Gemini integrado, atingiu seu menor preço desde o lançamento. A promoção aplica desconto de 24% com o cupom RESSACA200 no Magalu.", "por_que_importa": "A integração nativa de IA generativa em TVs de consumo mostra como assistentes como o Gemini estão se tornando padrão em eletrônicos, ampliando oportunidades para produtos e serviços conectados no varejo brasileiro.", "link": "https://tecnoblog.net/achados/tv-tcl-c7l-65-registra-o-menor-preco-desde-lancamento-em-oferta-no-magalu/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "09/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Bancos usam IA agêntica para combater fraudes com deepfakes", "resumo": "No Sibos 2026, a executiva da FICO Julie Conroy apresentou como bancos podem usar IA agêntica e tecnologia em nuvem para combater crimes financeiros impulsionados por IA, incluindo deepfakes que miram clientes de wealth management e corporativos. A abordagem busca antecipar táticas cada vez mais sofisticadas de fraude baseadas em inteligência artificial generativa.", "por_que_importa": "Instituições financeiras precisam investir em detecção baseada em IA tão rápido quanto os fraudadores adotam essas mesmas tecnologias, tornando a segurança antifraude um diferencial competitivo urgente.", "link": "https://www.finextra.com/videoarticle/3608/combatting-the-rise-of-ai-driven-financial-crime-in-banking?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "08/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Google lança novo rastreador Fitbit Edge com foco em saúde", "resumo": "O Google apresentou o Fitbit Edge, um novo dispositivo de monitoramento de saúde que combina sensores avançados com insights baseados em IA. A proposta é identificar mudanças no estado de saúde do usuário e traduzir esses sinais em orientações personalizadas.", "por_que_importa": "Reforça a disputa entre big techs por dados de saúde e wearables, abrindo espaço para parcerias e integrações de IA em produtos de bem-estar e saúde digital.", "link": "https://www.fiercehealthcare.com/health-tech/google-unveils-new-fitbit-edge-tracker-tech-giant-expands-health-monitoring-ambitions", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "Resumo semanal: IA agêntica avança em saúde digital nos EUA", "resumo": "A Fierce Healthcare traz as novidades da semana no setor de saúde digital, incluindo parcerias da Nextech com Assort Health e EliseAI para soluções de IA agêntica, além do lançamento de uma ferramenta clínica de IA da Elsevier voltada para enfermeiros. Também são destacadas movimentações da Arcadia e Solera Health no mercado de tecnologia em saúde.", "por_que_importa": "Mostra a consolidação da IA agêntica como tendência concreta em healthtech, sinalizando oportunidades de parcerias e produtos verticais para empresas de TI que atendem o setor de saúde.", "link": "https://www.fiercehealthcare.com/health-tech/weekly-rundown-hhs-awards-15m-ai-projects-arcadia-launches-portfolio-solutions", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "Abridge fecha acordo amplo com sistema universitário do Texas", "resumo": "A Abridge firmou uma parceria em escala corporativa com o University of Texas System, permitindo que as oito instituições de saúde da rede tenham acesso à sua plataforma de IA. O acordo cria um framework unificado para expandir o uso de IA generativa no apoio à documentação clínica e atendimento ao paciente.", "por_que_importa": "Acordos enterprise-wide como este mostram como fornecedores de IA em saúde estão escalando via contratos institucionais amplos, um modelo de go-to-market que pode inspirar estratégias de expansão em outros setores regulados no Brasil.", "link": "https://www.fiercehealthcare.com/ai-and-machine-learning/abridge-university-texas-system-enter-enterprise-wide-agreement-expanded-ai", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Empresas de Tecnologia", "cor": "#5A7CB0"}, {"nome": "Brasil", "cor": "#B0805A"}, {"nome": "Financeiro", "cor": "#3B6FD4"}, {"nome": "Saúde", "cor": "#2FA65A"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-aplicaçõesdeiaporsetor';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>
