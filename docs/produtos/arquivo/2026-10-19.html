@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicações de IA por Setor — 19 de outubro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">🏭 Aplicações de IA por Setor</span>
+      <a class="tab" href="../../index.html">📡 Boletim de IA</a>
+    </nav>
+    <div class="banner-arquivo">📚 Esta é uma edição anterior (19 de outubro de 2026). <a href="index.html">← ver lista de edições</a> <span class="separador">·</span> <a href="../index.html">ver a mais recente →</a></div>
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Aplicações de IA por Setor</h1>
+      </div>
+      <p class="subtitulo">edição de 19 de outubro de 2026 · 17 notícias captadas · <a class="link-arquivo" href="index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "IA em pagamentos: ganhos imediatos e transformação futura", "resumo": "O artigo discute como a IA já está otimizando processos de pagamento no curto prazo, trazendo eficiência operacional e redução de fraudes. A longo prazo, a expectativa é que ela redefina completamente a forma como o dinheiro circula globalmente, alterando infraestruturas e modelos de negócio do setor financeiro.", "por_que_importa": "Empresas de pagamentos e fintechs precisam equilibrar investimentos em melhorias incrementais com a preparação para mudanças estruturais no mercado trazidas pela IA.", "link": "https://www.finextra.com/event-info/635/ai-in-payments-short-term-gains-long-term-transformation?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "21/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Usuários usam IA para 'desinteligentizar' suas smart TVs", "resumo": "Cansados de anúncios, rastreamento e interfaces lentas, donos de smart TVs estão recorrendo a agentes de IA para remover bloatware e recuperar o controle dos aparelhos. A tendência mostra uma reação crescente contra a monetização agressiva de dados nesses dispositivos.", "por_que_importa": "Revela uma insatisfação de mercado com modelos de negócio baseados em ads e dados, abrindo espaço para produtos que priorizem privacidade e simplicidade como diferencial competitivo.", "link": "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "19/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Nvidia lança modelos abertos para agentes em empresas e PCs", "resumo": "A Nvidia apresentou novos modelos de IA abertos voltados para rodar agentes autônomos tanto em data centers corporativos quanto diretamente em PCs. A iniciativa busca atender empresas que preferem manter o controle total sobre seus modelos e dados, além de viabilizar assistentes de IA privados executados localmente no dispositivo.", "por_que_importa": "Reforça a tendência de IA on-premise e on-device, abrindo espaço para produtos corporativos que exigem privacidade, baixa latência e independência de nuvem.", "link": "https://techcrunch.com/2026/10/19/nvidia-launches-new-open-models-to-run-agents-in-the-enterprise-and-on-pcs/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "19/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Galaxy S27 pode vir com One UI 9.5 baseada no Android 17", "resumo": "A Samsung deve lançar o Galaxy S27 em 2027 com a One UI 9.5, baseada no Android 17 QPR2, seguindo a estratégia já usada no Galaxy S26. Entre as novidades esperadas está o App Lock, recurso nativo de bloqueio de aplicativos já identificado em testes internos.", "por_que_importa": "Mostra como fabricantes estão antecipando atualizações trimestrais do Android para diferenciar produtos com segurança e personalização antes mesmo do lançamento oficial do sistema.", "link": "https://canaltech.com.br/software/galaxy-s27-sera-lancado-com-versao-especial-do-android-17-veja-os-recursos/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Carga de RTX 5090 avaliada em R$ 2,5 milhões some em Guarulhos", "resumo": "Dois pallets de placas de vídeo RTX 5090, modelo Zotac, desapareceram dentro do Aeroporto Internacional de Guarulhos logo após a chegada, segundo a distribuidora paranaense Orderço. O prejuízo estimado é de R$ 2,5 milhões, e a empresa afirma nunca ter perdido uma carga em 18 anos de importações.", "por_que_importa": "O caso expõe falhas de segurança logística em produtos de alto valor ligados à demanda por IA, pressionando distribuidores a reforçar rastreamento e seguros em importações estratégicas de hardware.", "link": "https://canaltech.com.br/hardware/carga-milionaria-de-rtx-5090-desaparece-misteriosamente-no-aeroporto-de-guarulhos/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Startup testa robôs e carros autônomos com IA antes do uso real", "resumo": "A Laplace Intelligence, spinout da Universidade de Michigan, usa agentes de IA e simulações interativas para estressar e validar robôs e veículos autônomos antes de sua implantação. A startup, já lucrativa, participa do Startup Battlefield na TechCrunch Disrupt, em outubro, em São Francisco.", "por_que_importa": "Soluções de simulação e red-teaming podem se tornar etapa obrigatória na validação de sistemas autônomos, abrindo espaço para parcerias e novos serviços de garantia de qualidade em IA física.", "link": "https://techcrunch.com/2026/10/19/laplace-intelligence-red-teams-robots-and-self-driving-cars-before-they-hit-the-real-world/", "fonte": "TechCrunch AI", "categoria": "Empresas de Tecnologia", "data": "19/10/2026", "cor": "#5A7CB0", "selo_bg": "#E9EEF7", "selo_texto": "#33456B"}, {"titulo": "Salários de tecnologia chegam a R$ 40 mil, mas IA não garante ganho extra", "resumo": "O Guia Salarial 2027 da Michael Page revela que os cargos de tecnologia estão entre os mais bem remunerados do mercado, aproximando-se de R$ 40 mil. O levantamento aponta que ter conhecimento em IA é um diferencial competitivo, mas não necessariamente resulta em salários mais altos.", "por_que_importa": "Empresas de TI precisam repensar suas estratégias de retenção e remuneração, já que dominar IA virou pré-requisito básico e não mais um fator de diferenciação salarial.", "link": "https://tecnoblog.net/noticias/salarios-em-tecnologia-se-aproximam-dos-r-40-mil-veja-principais-cargos/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "JBL Boombox 4: vale a pena comprar na Black Friday?", "resumo": "A JBL Boombox 4, lançada em agosto de 2025 por R$ 3.199, já aparece por cerca de R$ 2.500 na Black Friday, com expectativa de preços ainda mais atrativos. O modelo traz melhorias em processamento de áudio, autonomia e peso em relação às gerações anteriores.", "por_que_importa": "Mostra como marcas premium de áudio usam datas sazonais para acelerar giro de estoque e ampliar penetração em um segmento de alto ticket médio.", "link": "https://canaltech.com.br/caixa-de-som/boombox-4-quanto-vale-pagar-na-jbl-grandona-na-black-friday/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "IA no setor nuclear: da adoção ao valor operacional real", "resumo": "Resultados do uso de IA em usinas nucleares ainda são desiguais no setor, mas algumas operadoras já conseguem extrair valor concreto das ferramentas. O artigo identifica padrões comuns entre as empresas que estão avançando além da fase experimental.", "por_que_importa": "Entender o que diferencia implementações bem-sucedidas de IA em ambientes críticos e altamente regulados pode orientar estratégias de adoção em outros setores de infraestrutura sensível.", "link": "https://www.utilitydive.com/spons/ai-in-nuclear-operations-the-shift-from-adoption-to-operating-value/832752/", "fonte": "Utility Dive", "categoria": "Energia", "data": "19/10/2026", "cor": "#C99A1E", "selo_bg": "#FBF1D6", "selo_texto": "#7A5E10"}, {"titulo": "World lança ferramentas contra fraudes com IA no setor bancário", "resumo": "A World, projeto de identidade digital cofundado por Sam Altman, apresentou um conjunto de ferramentas voltado para bancos e instituições financeiras. A solução visa combater deepfakes e tentativas de personificação por IA em contas de clientes, processos internos e agentes automatizados.", "por_que_importa": "Com fraudes baseadas em IA generativa crescendo rapidamente, soluções de verificação de identidade robustas podem se tornar diferencial competitivo e requisito regulatório para bancos e fintechs.", "link": "https://www.finextra.com/newsarticle/48602/world-takes-on-ai-driven-impersonations-with-new-suite-for-banking-and-finance?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "19/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Meta confirma que óculos gravaram áudio sem ativação por voz", "resumo": "A Meta admitiu que os óculos Ray-Ban Meta registraram áudios e transcrições no aplicativo Meta AI mesmo sem o comando de ativação do usuário. O caso levanta dúvidas sobre falhas no sistema de ativação por voz e na política de privacidade do dispositivo.", "por_que_importa": "Episódios assim reforçam o risco reputacional e regulatório de dispositivos wearables com captura contínua de áudio, exigindo atenção redobrada de empresas que desenvolvem produtos com IA embarcada e coleta de dados sensíveis.", "link": "https://tecnoblog.net/noticias/meta-admite-que-seus-oculos-gravaram-conversas-sem-comando/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "16/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Meta poderá usar notícias para treinar IA sem pagar licenças", "resumo": "A Meta atualizou seus termos comerciais para permitir a coleta automatizada de páginas vinculadas a contas empresariais, incluindo conteúdo jornalístico, para treinar seus modelos de IA. A mudança entra em vigor em 30 de outubro e dispensa acordos de licenciamento com veículos de notícias.", "por_que_importa": "A medida pode intensificar disputas legais e comerciais entre big techs e editoras, pressionando empresas de mídia a repensarem estratégias de proteção de conteúdo e monetização diante do avanço da IA generativa.", "link": "https://tecnoblog.net/noticias/meta-pode-coletar-noticias-para-treinar-ia-sem-pagar-por-licencas/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "16/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "AWS defende uso de IA para destravar gargalos na rede elétrica", "resumo": "Joseph Santamaria, líder de energia e utilities da AWS, afirma que concessionárias pioneiras no uso de IA para planejamento de redes já colhem resultados concretos. Entre os ganhos estão aprovações mais rápidas de projetos, menos interrupções no fornecimento e redução de custos operacionais.", "por_que_importa": "Mostra uma aplicação prática de IA em infraestrutura crítica, abrindo espaço para soluções de planejamento preditivo e automação em setores regulados e intensivos em capital.", "link": "https://www.utilitydive.com/news/utilities-need-ai-solve-grid-backlogs-aws-energy-lead-head/832816/", "fonte": "Utility Dive", "categoria": "Energia", "data": "15/10/2026", "cor": "#C99A1E", "selo_bg": "#FBF1D6", "selo_texto": "#7A5E10"}, {"titulo": "IA em pagamentos: equilibrando inovação e risco de fraude", "resumo": "No Sibos 2026, David Crawford, da Pay.UK, apresentou como a combinação de IA determinística e probabilística ajuda a manter os pagamentos rápidos, seguros e protegidos contra fraudes. A abordagem busca equilibrar a agilidade exigida pelos consumidores com a necessidade de detecção eficaz de atividades suspeitas.", "por_que_importa": "Empresas de pagamentos e fintechs devem observar esse modelo híbrido de IA como referência para reduzir fraudes sem comprometer velocidade e experiência do usuário.", "link": "https://www.finextra.com/videoarticle/3612/how-can-ai-in-payments-balance-innovation-with-fraud-risk?utm_medium=rssfinextra&utm_source=finextrafeed", "fonte": "Finextra", "categoria": "Financeiro", "data": "14/10/2026", "cor": "#3B6FD4", "selo_bg": "#E4ECFC", "selo_texto": "#244A99"}, {"titulo": "Startup de IA de voz lança comparador gratuito de planos Medicare", "resumo": "A careCycle, startup de IA de voz, lançou uma ferramenta gratuita para beneficiários do Medicare compararem planos de saúde. O serviço estima custos anuais e identifica planos próximos que mantêm os médicos do paciente na rede, sem cobrar comissões ou vender dados pessoais.", "por_que_importa": "Mostra como IA de voz pode ser aplicada a decisões financeiras complexas e sensíveis, abrindo espaço para modelos de negócio que priorizam confiança do usuário em vez de monetização por comissão.", "link": "https://www.fiercehealthcare.com/payers/voice-ai-medicare-carecycle-rolls-out-free-plan-comparison-tool", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "OpenEvidence e Doximity encerram disputa judicial sobre IA", "resumo": "As startups de IA para saúde OpenEvidence e Doximity chegaram a um acordo para encerrar um litígio marcado por acusações de espionagem corporativa e ataques cibernéticos. A disputa também incluía contra-acusações de difamação e disseminação de informações falsas entre as empresas.", "por_que_importa": "O caso expõe a intensidade da concorrência no mercado de IA aplicada à saúde e serve de alerta sobre riscos legais e reputacionais em disputas entre startups do setor.", "link": "https://www.fiercehealthcare.com/ai-and-machine-learning/openevidence-doximity-reach-settlement-contentious-ai-lawsuit", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}, {"titulo": "AMA lança framework de governança para IA agêntica na saúde", "resumo": "A American Medical Association divulgou uma estrutura de governança voltada para soluções de IA agêntica usadas em funções clínicas. O CEO da entidade, John Whyte, afirmou que o uso crescente dessas tecnologias levanta questões urgentes sobre autoridade clínica, supervisão e responsabilização.", "por_que_importa": "Empresas que desenvolvem IA para saúde precisarão incorporar princípios de governança e accountability desde o design para atender exigências regulatórias e ganhar confiança de médicos e instituições.", "link": "https://www.fiercehealthcare.com/regulatory/american-medical-association-rolls-out-governance-framework-agentic-ai-solutions", "fonte": "Fierce Healthcare", "categoria": "Saúde", "data": "", "cor": "#2FA65A", "selo_bg": "#DFF5E5", "selo_texto": "#1A6B3B"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Financeiro", "cor": "#3B6FD4"}, {"nome": "Empresas de Tecnologia", "cor": "#5A7CB0"}, {"nome": "Brasil", "cor": "#B0805A"}, {"nome": "Energia", "cor": "#C99A1E"}, {"nome": "Saúde", "cor": "#2FA65A"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-aplicaçõesdeiaporsetor';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>

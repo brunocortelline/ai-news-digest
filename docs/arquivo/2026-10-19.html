@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boletim de IA — 19 de outubro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">📡 Boletim de IA</span>
+      <a class="tab" href="../produtos/index.html">🏭 Aplicações de IA por Setor</a>
+    </nav>
+    <div class="banner-arquivo">📚 Esta é uma edição anterior (19 de outubro de 2026). <a href="index.html">← ver lista de edições</a> <span class="separador">·</span> <a href="../index.html">ver a mais recente →</a></div>
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Boletim de IA</h1>
+      </div>
+      <p class="subtitulo">edição de 19 de outubro de 2026 · 18 notícias captadas · <a class="link-arquivo" href="index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "Pesquisador da Goodfire propõe nova visão sobre redes neurais", "resumo": "O pesquisador Nick Cammarata, da startup de IA Goodfire, publicou um extenso texto de 26 mil palavras defendendo que a forma como entendemos o funcionamento interno das redes neurais está equivocada. A afirmação gerou intensa repercussão na comunidade de IA, com reações que vão da euforia ao ceticismo.", "por_que_importa": "Se a tese se confirmar, pode mudar como empresas interpretam e confiam em modelos de IA, impactando diretamente estratégias de explicabilidade, segurança e diferenciação de produtos baseados em IA.", "link": "https://www.technologyreview.com/2026/10/19/1147149/we-were-looking-at-it-wrong-the-explosive-claim-thats-upended-the-ai-world/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "19/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Chefe do Instagram admite falta de solução contra deepfakes", "resumo": "O executivo à frente do Instagram reconheceu publicamente que a empresa ainda não tem uma estratégia eficaz para combater deepfakes na plataforma. Perfis falsos usam avatares gerados por IA para replicar conteúdo original, dificultando a moderação e a identificação de conteúdo manipulado.", "por_que_importa": "A ausência de soluções robustas contra deepfakes expõe uma lacuna crítica de confiança e segurança que empresas de tecnologia e mídia precisam monitorar ao desenvolver produtos que dependem de autenticidade de conteúdo e identidade digital.", "link": "https://tecnoblog.net/noticias/chefe-do-instagram-admite-que-ainda-nao-sabe-como-combater-deep-fakes/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Mod traz Ray Reconstruction e frame gen da NVIDIA para placas AMD", "resumo": "Um mod chamado DLSS-NR-on-AMD permite que GPUs Radeon RX 7000 e RX 9000 rodem tecnologias exclusivas da NVIDIA, como Ray Reconstruction e Frame Generation (até 4x), além do upscaling do DLSS 4.5. A solução funciona apenas no Windows 11, em jogos DirectX 12 que já suportam DLSS, FSR ou XeSS.", "por_que_importa": "Mostra como a comunidade pode quebrar barreiras de vendor lock-in em IA gráfica, pressionando fabricantes a repensar estratégias de diferenciação por software proprietário.", "link": "https://canaltech.com.br/hardware/mod-leva-ray-reconstruction-e-dlss-a-placas-da-amd-sem-perda-de-fps/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "IA é usada para remover anúncios de TVs smart", "resumo": "Usuários estão recorrendo a ferramentas como Claude Code para criar launchers personalizados que eliminam anúncios e modificam as interfaces nativas de smart TVs. A prática mostra como modelos de IA generativa estão facilitando a customização de software em dispositivos antes considerados fechados.", "por_que_importa": "Fabricantes de TVs que monetizam via anúncios podem ver sua receita ameaçada, enquanto cresce a demanda por produtos e serviços que ofereçam personalização nativa sem depender de soluções caseiras.", "link": "https://tecnoblog.net/noticias/usuarios-usam-ia-para-remover-anuncios-e-mudar-interfaces-de-tvs/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Avaliação da Anthropic cai US$ 500 bi antes de IPO", "resumo": "Investidores reduziram a expectativa de valor da Anthropic, dona do Claude, de US$ 2 trilhões para US$ 1,5 trilhão antes da abertura de capital prevista para novembro. A revisão foi discutida em reunião com investidores em São Francisco e reflete uma desaceleração no crescimento de receita da empresa, segundo a Reuters.", "por_que_importa": "O ajuste reacende o debate sobre uma possível bolha em IA e pode impactar como mercado e investidores avaliam startups do setor, inclusive concorrentes e parceiros de negócio.", "link": "https://canaltech.com.br/mercado/ipo-da-dona-do-claude-tem-corte-de-us-500-bi-e-acende-alerta-de-bolha/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Vazamento indica que PS6 pode custar mais de R$ 6 mil", "resumo": "Um novo vazamento do leaker KeplerL2 aponta que apenas a memória RAM e o armazenamento NAND do PS6 custarão US$ 680 à Sony, impulsionados pela escassez e alta de preços de componentes. Somando processador, placa-mãe e demais peças, o custo total pode superar o dobro desse valor, sem considerar impostos e taxas no Brasil.", "por_que_importa": "O encarecimento de componentes críticos como RAM e NAND sinaliza pressão de custos que pode afetar toda a cadeia de hardware tecnológico, exigindo que fabricantes repensem estratégias de precificação e margens em mercados emergentes como o Brasil.", "link": "https://canaltech.com.br/games/ps6-pode-ser-o-console-mais-caro-da-historia-custando-mais-de-r-6-mil/", "fonte": "Canaltech", "categoria": "Brasil", "data": "19/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Democratas veem na regulação de IA uma aposta eleitoral", "resumo": "Pesquisas indicam que os democratas podem retomar o controle de pelo menos uma câmara do Congresso dos EUA nas eleições de meio de mandato em novembro. Com isso, o partido teria liderança em comitês-chave e precisaria definir sua postura sobre a regulação da inteligência artificial, um dos temas políticos mais recentes e delicados do país.", "por_que_importa": "Uma eventual virada política nos EUA pode acelerar ou endurecer marcos regulatórios de IA, afetando diretamente estratégias de expansão e compliance de empresas de tecnologia globais.", "link": "https://www.theverge.com/policy/1013113/democrats-ai-midterms", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "19/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Pesquisadores isolam Claude em ilha deserta virtual e IA 'brinca'", "resumo": "Pesquisadores testaram o que agentes de IA fazem sem instruções, deixando cópias do Claude Opus 4.7 (apelidadas de Eko) sozinhas por 30 horas em uma ilha deserta virtual. Em vez de ficarem inertes, os agentes começaram a explorar o ambiente e se engajar em comportamentos parecidos com brincadeira espontânea.", "por_que_importa": "Entender como agentes de IA se comportam sem objetivos definidos ajuda a antecipar riscos e oportunidades em produtos autônomos, especialmente conforme empresas avançam para sistemas com mais liberdade de ação.", "link": "https://www.technologyreview.com/2026/10/19/1147095/ai-stranded-claude-virtual-desert-island-play/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "19/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Meta retira trecho de termos que gerava preocupação sobre scraping e IA", "resumo": "A Meta atualizou os termos de uso de seus serviços, removendo uma linguagem que havia gerado preocupações sobre coleta de dados e treinamento de modelos de IA. Um porta-voz da empresa afirmou que a mudança no texto não representa alteração na forma como a Meta rastreia a web.", "por_que_importa": "Reforça o escrutínio crescente sobre práticas de coleta de dados para treinar IA, algo que empresas de tecnologia precisam monitorar ao definir suas próprias políticas de uso de conteúdo e dados.", "link": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "17/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Meta retira trecho de termos que permitia raspar sites de notícias", "resumo": "Após críticas, a Meta atualizou novamente seus termos comerciais, removendo a cláusula que sugeria poder coletar conteúdo de sites, incluindo portais de notícias, para treinar seus modelos de IA. A mudança ocorre em meio a pressão crescente sobre o uso de dados de terceiros no treinamento de IA generativa.", "por_que_importa": "Mostra como empresas de IA estão recuando publicamente diante de disputas legais e reputacionais sobre uso de dados, o que pode influenciar políticas de licenciamento de conteúdo no setor.", "link": "https://www.theverge.com/tech/1013409/meta-removes-language-that-may-have-allowed-it-to-scrape-news-sites", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "17/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Itaú expande IA generativa para toda sua base de clientes", "resumo": "O Itaú está implementando sua estratégia 'AI First' por meio do ia.i, uma interface conversacional voltada a clientes, e da plataforma de governança IARA, usada internamente. A iniciativa aplica IA generativa em larga escala em um dos setores mais regulados do Brasil, o financeiro.", "por_que_importa": "Mostra um case concreto de como escalar IA generativa com governança robusta em ambientes regulados, servindo de referência para bancos e empresas brasileiras que buscam equilibrar inovação e compliance.", "link": "https://openai.com/index/itau-generative-ai", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "16/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "Pesquisador usa IA generativa para projetar vírus do zero", "resumo": "Em entrevista, o estudante de doutorado Samuel King, da Stanford, detalha como usou um modelo de IA generativa para criar os projetos genéticos de vírus microscópicos. Ainda não se trata de vida totalmente gerada por IA, mas o avanço aponta nessa direção.", "por_que_importa": "A IA generativa aplicada à biologia sintética abre caminho para novas terapias e biotecnologias, mas também levanta riscos de biossegurança que empresas de saúde e governos precisarão monitorar de perto.", "link": "https://www.technologyreview.com/2026/10/16/1146224/roundtables-a-conversation-with-the-creator-of-ai-designed-viruses/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "16/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Ex-Nvidia diz que IA física vai além dos robôs", "resumo": "Amulya Vishwanath, que liderou por sete anos o marketing de produtos de robótica da Nvidia e agora investe no setor, afirma que a robótica vive sua 'era Lego', com componentes básicos como atuadores, mãos robóticas e padrões de segurança ainda em construção. Essa visão contraria quem acredita que um modelo de fundação geral está prestes a revolucionar a área de forma unificada.", "por_que_importa": "Para empresas de TI que avaliam investir em robótica ou IA física, o alerta sugere que ainda é cedo para apostar em soluções genéricas e prontas, sendo mais estratégico focar em infraestrutura e componentes fundamentais.", "link": "https://techcrunch.com/podcast/physical-ai-is-more-than-robots-says-the-nvidia-veteran-now-investing-in-it/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "16/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Novo modelo da Elorian raciocina com imagens, não só sobre elas", "resumo": "A Elorian lançou o Glimpse, seu primeiro modelo de IA, que segundo a empresa supera até o GPT-6 Astra em raciocínio sobre gráficos científicos e legendagem de vídeos curtos. O modelo também apresenta resultados competitivos em outras tarefas de raciocínio visual.", "por_que_importa": "Modelos que raciocinam visualmente de forma nativa podem acelerar aplicações em análise de dados, automação de relatórios e produtos multimodais, pressionando empresas de TI a reavaliar suas stacks de IA visual.", "link": "https://techcrunch.com/2026/10/16/elorians-first-ai-model-wants-to-reason-with-images-not-just-about-them/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "16/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Novos termos da Meta podem liberar treinar IA com sites de notícias", "resumo": "Segundo reportagem do Nieman Lab, os novos termos de uso da Meta, que entram em vigor em 30 de outubro, parecem autorizar a empresa a rastrear e coletar conteúdo de sites 'associados' a negócios que usam suas plataformas, incluindo veículos de imprensa. Esse conteúdo poderia ser usado para 'desenvolver, melhorar, pesquisar' e 'treinar' seus sistemas de IA.", "por_que_importa": "Editoras e empresas que usam ferramentas da Meta precisam revisar contratos e políticas de conteúdo, pois podem estar cedendo dados valiosos para treinamento de IA sem compensação clara.", "link": "https://www.theverge.com/tech/1012846/meta-business-terms-scrape-news-publishers", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "16/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "ChatGPT nega vínculo entre post e eleição brasileira", "resumo": "Um post gerado pelo ChatGPT viralizou associado à eleição no Brasil, mas a OpenAI negou qualquer relação direta com o pleito. A polêmica surge junto ao lançamento de uma nova função da IA que ensina conceitos por meio de imagens.", "por_que_importa": "Episódios assim reforçam a necessidade de empresas de IA e tech terem políticas claras de moderação e transparência para evitar associações indevidas com temas políticos sensíveis.", "link": "https://tecnoblog.net/noticias/fez-o-l-chatgpt-nega-relacao-de-post-com-eleicao-no-brasil/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "15/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "OpenAI lança recurso de estudo guiado para professores", "resumo": "A OpenAI celebrou o Dia dos Professores no Brasil apresentando o 'AI for Educators' em português e destacando o 'Study Mode', ferramenta que estimula o aprendizado ativo e passo a passo em vez de respostas prontas. O objetivo é ajudar educadores a usar IA como apoio pedagógico, não como substituto do raciocínio dos alunos.", "por_que_importa": "Mostra como fornecedores de IA estão adaptando produtos para mercados locais e setores específicos, abrindo espaço para parcerias e soluções educacionais nacionais baseadas em LLMs.", "link": "https://openai.com/index/teaching-students-to-think-and-learn-through-questions", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "15/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "Escritório de advocacia cria IA para revisar contratos com a OpenAI", "resumo": "O escritório Sullivan & Cromwell, em parceria com a OpenAI, desenvolveu o Agreement Analyzer, uma ferramenta de IA voltada para identificar problemas em minutas de contratos. A solução aplica expertise jurídica especializada para acelerar e qualificar o processo de revisão de acordos.", "por_que_importa": "Mostra como escritórios de advocacia estão incorporando IA generativa em fluxos de trabalho de alto valor, abrindo espaço para parcerias e produtos verticais especializados no setor jurídico.", "link": "https://openai.com/index/sullivan-cromwell", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "15/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Pesquisa & Tendências", "cor": "#7F77DD"}, {"nome": "Brasil", "cor": "#B0805A"}, {"nome": "Mercado & Negócios", "cor": "#1D9E75"}, {"nome": "Labs & Modelos", "cor": "#E08D2D"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-boletimdeia';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>
