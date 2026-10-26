@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boletim de IA — 26 de outubro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">📡 Boletim de IA</span>
+      <a class="tab" href="../produtos/index.html">🏭 Aplicações de IA por Setor</a>
+    </nav>
+    <div class="banner-arquivo">📚 Esta é uma edição anterior (26 de outubro de 2026). <a href="index.html">← ver lista de edições</a> <span class="separador">·</span> <a href="../index.html">ver a mais recente →</a></div>
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Boletim de IA</h1>
+      </div>
+      <p class="subtitulo">edição de 26 de outubro de 2026 · 19 notícias captadas · <a class="link-arquivo" href="index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "Smart TV LG QNED Mini LED 65\" tem 28% de desconto", "resumo": "A LG QNED70 de 65 polegadas, com painel 4K e recursos de IA para recomendação de conteúdo, está com 28% de desconto no Pix via cupom no Mercado Livre. A oferta reduz significativamente o preço de um modelo com tecnologia avançada de cores.", "por_que_importa": "Promoções agressivas em smart TVs com IA embarcada mostram como fabricantes usam recursos inteligentes como diferencial competitivo em datas de alta demanda no varejo.", "link": "https://tecnoblog.net/achados/smart-tv-lg-qned-mini-led-65-fica-28-mais-barata-em-oferta/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "26/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Google lança novo desafio de IA para mapear o cérebro humano", "resumo": "O Google anunciou mais uma iniciativa da série 'AI Quests', desta vez voltada ao mapeamento do cérebro humano com apoio de inteligência artificial. A proposta busca engajar pesquisadores e desenvolvedores em torno de desafios científicos complexos usando ferramentas de IA do Google.", "por_que_importa": "Mostra como gigantes de tecnologia estão direcionando IA para pesquisa biomédica de ponta, abrindo oportunidades de parceria e inovação em saúde digital e neurociência computacional.", "link": "https://blog.google/products-and-platforms/products/education/ai-quests-polar-peaks/", "fonte": "Google AI Blog", "categoria": "Labs & Modelos", "data": "26/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "Anthropic protocola IPO e define ticker 'ANT' na Nasdaq", "resumo": "A Anthropic, criadora do Claude, deu um passo oficial rumo à abertura de capital ao protocolar documentos para listar suas ações na Nasdaq sob o código ANT. A empresa ainda não definiu quantidade de papéis ou preço, e as ações ainda não estão disponíveis para compra.", "por_que_importa": "Um IPO da Anthropic injetaria capital massivo na corrida por IA generativa e pode pressionar concorrentes como OpenAI a acelerar suas próprias estratégias de financiamento e expansão de produto.", "link": "https://canaltech.com.br/mercado/dona-do-claude-anuncia-entrada-na-bolsa-e-escolhe-nome-para-suas-acoes/", "fonte": "Canaltech", "categoria": "Brasil", "data": "26/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Itaú adquire startup de IA NeoSpace por R$ 2,9 bilhões", "resumo": "O Itaú fechou acordo para comprar integralmente a NeoSpace, startup de inteligência artificial na qual já detinha participação, em negócio avaliado em R$ 2,9 bilhões. A operação ainda precisa ser aprovada pelo Cade e pelo Banco Central antes de ser concluída.", "por_que_importa": "A compra reforça a estratégia dos grandes bancos brasileiros de internalizar capacidades de IA via aquisições, pressionando fintechs e empresas de tecnologia a acelerarem suas próprias ofertas para não perderem espaço competitivo.", "link": "https://tecnoblog.net/noticias/itau-compra-startup-de-ia-por-r-29-bilhoes/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "26/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Herdeiros de Elvis processam Anthropic por uso indevido de letras no Claude", "resumo": "Donos dos direitos de 274 músicas de Elvis Presley processaram a Anthropic, alegando uso não autorizado das composições para treinar o Claude. A ação, movida por uma subsidiária da Authentic Brands Group em tribunal federal da Califórnia, pede indenização de até US$ 48,6 milhões.", "por_que_importa": "O caso reforça a pressão legal sobre empresas de IA quanto ao licenciamento de conteúdo protegido, podendo elevar custos e exigir novos modelos de parceria com detentores de direitos autorais.", "link": "https://canaltech.com.br/inteligencia-artificial/elvis-vs-ia-donos-dos-direitos-do-rei-do-rock-processam-dona-do-claude-entenda-motivo/", "fonte": "Canaltech", "categoria": "Brasil", "data": "26/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Spyware Android rouba senha dupla verificação do Telegram", "resumo": "O spyware uCreator, distribuído via APKs adulterados que imitam apps legítimos de mensagens, consegue capturar a senha de verificação em duas etapas do Telegram e sequestrar contas no Android. A ameaça funciona como uma plataforma comercial de espionagem, alugada a terceiros para monitorar apps e controlar contas remotamente, incluindo recursos para clonar perfis do WeChat.", "por_que_importa": "Reforça a urgência de empresas investirem em detecção de apps modificados e educação de usuários sobre instalação fora das lojas oficiais, especialmente em produtos que dependem de autenticação via mensageria.", "link": "https://canaltech.com.br/seguranca/novo-spyware-virus-para-android-rouba-senha-de-duas-etapas-do-telegram/", "fonte": "Canaltech", "categoria": "Brasil", "data": "26/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Anthropic entra com pedido de IPO e mira revolucionar setores com IA", "resumo": "A Anthropic, empresa por trás do Claude, protocolou seu prospecto S-1 na SEC, buscando sair na frente da OpenAI em uma possível oferta pública inicial. A empresa pretende listar suas ações na Nasdaq sob o ticker 'ANT'.", "por_que_importa": "Um IPO da Anthropic pode redefinir a dinâmica competitiva do mercado de IA generativa, atraindo capital e atenção que impactam parcerias, preços e ritmo de inovação em toda a cadeia de produtos de IA.", "link": "https://www.theverge.com/ai-artificial-intelligence/1018476/anthropic-ipo-details-s1-filed-sec", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "26/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Foco em desastres de IA ignora danos cotidianos menores", "resumo": "O artigo critica a política de tecnologia que comemora vitórias simbólicas, como chatbots que prometem não incentivar suicídio, enquanto ignoram danos mais sutis e recorrentes causados pelos mesmos produtos. Para o autor, evitar catástrofes extremas não deveria ser confundido com construir tecnologia realmente segura e benéfica.", "por_que_importa": "Empresas de tecnologia precisam ir além de métricas mínimas de segurança e avaliar impactos cotidianos de seus produtos de IA, sob risco de erosão de confiança e exposição regulatória.", "link": "https://www.technologyreview.com/2026/10/26/1147645/the-focus-on-ai-safety-disasters-ignores-everyday-harms/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "26/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "IA não traz retorno financeiro para maioria das empresas, diz economista", "resumo": "Segundo economista-chefe da Apollo, apesar dos investimentos bilionários e do hype em torno da IA, a tecnologia ainda não gerou ganhos financeiros mensuráveis para empresas fora do setor de tecnologia. O alerta reforça a percepção de que a adoção corporativa de IA está mais ligada a expectativa do que a resultados concretos.", "por_que_importa": "Serve como alerta para evitar investimentos em IA sem metas claras de ROI, priorizando casos de uso com impacto mensurável nos negócios.", "link": "https://techcrunch.com/2026/10/25/ai-delivers-zero-financial-payoff-to-most-companies-according-to-apollo-economist/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "25/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Subreddit r/opensource proíbe projetos de IA e novas regras polêmicas", "resumo": "Os moderadores do r/opensource publicaram novas regras de submissão banindo projetos que usem, sejam feitos por, ou destinados a IA, além de outras restrições controversas. A justificativa é que a IA, como existe hoje, seria incompatível com os princípios do Open Source.", "por_que_importa": "A decisão reflete uma crescente resistência de comunidades open source à integração com IA, o que pode afetar a visibilidade e adoção de ferramentas que combinam código aberto e inteligência artificial.", "link": "https://www.theverge.com/ai-artificial-intelligence/1018217/reddit-opensource-ai-ban", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "25/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Pensilvânia exige identificação em anúncios gerados por IA", "resumo": "O governador da Pensilvânia, Josh Shapiro, sancionou uma lei que obriga anúncios significativamente modificados ou gerados por inteligência artificial a conter um aviso de identificação. A exigência vale para qualquer formato de anúncio, incluindo imagens, vídeos, áudios e textos.", "por_que_importa": "Empresas que usam IA em marketing e publicidade precisarão adaptar processos de compliance e rotulagem antes que regulações semelhantes se espalhem para outros estados ou países.", "link": "https://www.theverge.com/ai-artificial-intelligence/1018187/pennsylvania-ai-deceptive-advertising-act", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "24/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "TechCrunch Founder Summit 2026 reúne nomes como Toast e Bessemer", "resumo": "O TechCrunch Founder Summit 2026, realizado em parceria com a Fidelity Private Shares, será um evento de um dia dedicado a fundadores de startups. A programação vai além de captação de recursos e IA, abordando temas como aquisição de clientes, formação de times, pitch, liderança e escala de negócios dentro e fora dos polos tradicionais de startups.", "por_que_importa": "Para empresas de TI que acompanham o ecossistema de inovação, o evento sinaliza tendências e conexões relevantes para parcerias, investimentos e benchmarking de práticas de crescimento de startups.", "link": "https://techcrunch.com/2026/10/23/from-toast-to-bessemer-who-founders-will-hear-from-at-techcrunch-founder-summit-2026/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "23/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Galaxy S26 FE com gravação 8K entra em promoção no Magalu", "resumo": "O Galaxy S26 FE, lançado há apenas um mês no Brasil, já aparece com desconto no Magalu. O aparelho traz tela de 120 Hz, recursos de Galaxy AI, Android 17 e capacidade de gravação de vídeo em 8K.", "por_que_importa": "A rápida queda de preço mostra a pressão competitiva no mercado de intermediários premium com IA embarcada, um segmento estratégico para fabricantes e varejistas brasileiros.", "link": "https://tecnoblog.net/achados/galaxy-s26-fe-filma-em-8k-e-esta-em-promocao-no-magalu/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "23/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "inDrive planeja testar robotáxis na Ásia Central em 2027", "resumo": "A inDrive, rival da Uber, anunciou parceria com Pony.ai e Nvidia para testar robotáxis em Astana, capital do Cazaquistão, a partir do primeiro semestre de 2027. A iniciativa marca a entrada da tecnologia de veículos autônomos em um novo mercado geográfico pouco explorado pelo setor.", "por_que_importa": "Mostra como players regionais de mobilidade buscam diferenciação tecnológica em mercados emergentes antes que gigantes globais consolidem posição, abrindo espaço para parcerias estratégicas em tecnologia autônoma fora dos polos tradicionais.", "link": "https://techcrunch.com/2026/10/22/uber-rival-indrive-eyes-2027-robotaxi-tests-in-central-asia-with-pony-ai-and-nvidia/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "23/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "OpenAI firma parceria com NASK da Polônia em segurança de IA", "resumo": "A OpenAI anunciou uma colaboração com o instituto polonês NASK para avançar em pesquisa técnica e segurança de IA. O objetivo é fortalecer salvaguardas e contribuir para um ecossistema digital mais resiliente na Europa.", "por_que_importa": "Reforça o movimento de grandes players de IA em buscar validação e cooperação com órgãos governamentais, sinalizando tendência regulatória que empresas de tecnologia devem acompanhar de perto.", "link": "https://openai.com/index/openai-nask-ai-safety-security-partnership", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "23/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "Os pilares para construir IA escalável com responsabilidade", "resumo": "Uma sessão da conferência EmTech Future, da MIT Technology Review, discute os elementos essenciais para escalar sistemas de IA: dados, engenharia, plataformas, modelos operacionais e governança integrados. O foco está em como implementar IA de forma responsável e confiável, especialmente em setores altamente regulados, viabilizando capacidades emergentes como IA agêntica.", "por_que_importa": "Empresas que negligenciam governança e integração estrutural ao escalar IA correm risco regulatório e operacional — um guia prático para evitar retrabalho caro na adoção de IA agêntica.", "link": "https://www.technologyreview.com/2026/10/22/1146103/the-foundations-of-scalable-ai/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "22/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Modelos da OpenAI chegam ao Google Cloud", "resumo": "OpenAI e Google Cloud firmaram parceria para disponibilizar modelos de ponta e fluxos de trabalho do Codex no Model Garden do Gemini. O acesso será feito através do Google Cloud Marketplace.", "por_que_importa": "A movimentação reduz barreiras de distribuição entre concorrentes e amplia opções de infraestrutura para empresas que já usam Google Cloud, podendo acelerar adoção multi-modelo em produtos corporativos.", "link": "https://openai.com/index/openai-models-google-cloud", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "21/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "OpenAI revela como construiu sistema de anúncios do ChatGPT", "resumo": "A OpenAI detalhou a arquitetura por trás do novo sistema de publicidade do ChatGPT, que usa LLMs para entender a intenção das conversas e exibir anúncios relevantes. A empresa destaca que os anúncios são mantidos separados das respostas geradas pela IA, buscando preservar a confiança do usuário.", "por_que_importa": "Define um novo modelo de monetização para assistentes conversacionais, abrindo caminho para empresas de TI explorarem publicidade contextual em produtos baseados em IA generativa.", "link": "https://openai.com/index/building-chatgpt-ad-stack", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "21/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "O que outros setores podem aprender com a adoção de IA na tecnologia", "resumo": "O debate sobre IA no trabalho costuma ser pautado pelo Vale do Silício, mas o setor de tecnologia é apenas o primeiro a enfrentar essa transformação. À medida que ferramentas de IA generativa e automação amadurecem, as mudanças já observadas em engenharia de software e gestão de produtos tendem a se espalhar para outras indústrias.", "por_que_importa": "Entender os padrões de adoção no setor de tecnologia pode ajudar empresas de outros segmentos a antecipar impactos organizacionais e evitar erros na própria jornada de transformação com IA.", "link": "https://www.technologyreview.com/2026/10/20/1145423/ai-adoption-by-industry-shows-what-other-sectors-can-learn/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "20/10/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Brasil", "cor": "#B0805A"}, {"nome": "Labs & Modelos", "cor": "#E08D2D"}, {"nome": "Mercado & Negócios", "cor": "#1D9E75"}, {"nome": "Pesquisa & Tendências", "cor": "#7F77DD"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-boletimdeia';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>
