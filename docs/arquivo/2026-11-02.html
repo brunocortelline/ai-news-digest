@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boletim de IA — 2 de novembro de 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text: #1B2340;
+    --text-secondary: #4B5470;
+    --text-muted: #848DA6;
+    --border: #E1E5F0;
+    --border-strong: #C9CFE0;
+    --accent: #5A4FCF;
+    --accent-bg: #EDEAFB;
+    --favorito: #E08D2D;
+    --favorito-bg: #FDEEDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+  }
+  .envelope {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .tabs-site {
+    display: flex;
+    gap: 8px;
+    padding: 20px 0 0;
+  }
+  .tabs-site .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: #EDEFF6;
+  }
+  .tabs-site .tab.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .tabs-site a.tab:hover { background: #E3E6F1; }
+  header {
+    padding: 28px 0 28px;
+    position: relative;
+  }
+  .radar-fundo {
+    position: absolute;
+    top: -40px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,79,207,0.10) 0%, rgba(90,79,207,0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .titulo-linha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .radar-icone {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .radar-icone::before, .radar-icone::after {
+    content: "";
+    position: absolute;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .radar-icone::before { width: 22px; height: 22px; }
+  .radar-icone::after { width: 12px; height: 12px; background: #fff; border: none; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p.subtitulo {
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .link-arquivo {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .link-arquivo:hover { text-decoration: underline; }
+  .banner-arquivo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 16px 0 -4px;
+  }
+  .banner-arquivo a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .banner-arquivo a:hover { text-decoration: underline; }
+  .banner-arquivo .separador { color: var(--border-strong); }
+  .controles {
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .busca svg { flex-shrink: 0; color: var(--text-muted); }
+  .busca input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    width: 100%;
+    background: transparent;
+  }
+  .busca input::placeholder { color: var(--text-muted); }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #EDEFF6;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { background: #E3E6F1; }
+  .chip .ponto {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.ativo {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .chip.favoritos-chip.ativo {
+    background: var(--favorito);
+    color: #fff;
+  }
+  .contador {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  main { margin-top: 8px; }
+  .lista {
+    display: grid;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--card-cor, var(--accent));
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(27,35,64,0.04), 0 4px 16px rgba(27,35,64,0.03);
+    transition: box-shadow 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(27,35,64,0.06), 0 8px 24px rgba(27,35,64,0.05);
+  }
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .selo {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .favorito-btn:hover { color: var(--favorito); }
+  .favorito-btn.ativo { color: var(--favorito); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .card h3 a:hover { color: var(--accent); }
+  .resumo {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+  }
+  .por-que {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 2px solid var(--card-cor, var(--accent));
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+  }
+  .por-que strong { color: var(--text); }
+  .vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .vazio p { margin: 4px 0; }
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 23px; }
+    .card { padding: 15px 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="envelope">
+    <nav class="tabs-site">
+      <span class="tab ativo">📡 Boletim de IA</span>
+      <a class="tab" href="../produtos/index.html">🏭 Aplicações de IA por Setor</a>
+    </nav>
+    <div class="banner-arquivo">📚 Esta é uma edição anterior (2 de novembro de 2026). <a href="index.html">← ver lista de edições</a> <span class="separador">·</span> <a href="../index.html">ver a mais recente →</a></div>
+    <header>
+      <div class="radar-fundo"></div>
+      <div class="titulo-linha">
+        <div class="radar-icone"></div>
+        <h1>Boletim de IA</h1>
+      </div>
+      <p class="subtitulo">edição de 2 de novembro de 2026 · 19 notícias captadas · <a class="link-arquivo" href="index.html">ver edições anteriores</a></p>
+
+      <div class="controles">
+        <div class="busca">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="campo-busca" placeholder="Buscar por título, fonte ou assunto...">
+        </div>
+        <div class="filtros" id="filtros"></div>
+      </div>
+
+      <p class="contador" id="contador"></p>
+    </header>
+
+    <main>
+      <div class="lista" id="lista-artigos"></div>
+    </main>
+
+    <footer>
+      gerado automaticamente a partir de fontes públicas · resumido e traduzido com a API da Claude (Anthropic) · favoritos salvos neste navegador
+    </footer>
+  </div>
+
+  <script id="dados-artigos" type="application/json">[{"titulo": "Boom da IA reaquece mercado de fitas magnéticas", "resumo": "A Fujifilm vai investir R$ 344 milhões para quintuplicar sua produção de fitas magnéticas (LTO), usadas por data centers para armazenamento de grandes volumes de dados. O movimento é impulsionado pelo crescimento explosivo de dados gerados por aplicações de IA, que precisam de opções de armazenamento de longo prazo mais baratas que discos e SSDs.", "por_que_importa": "Para empresas que lidam com datasets massivos de treinamento de IA, fitas magnéticas voltam a ser alternativa viável de armazenamento frio, reduzindo custos de infraestrutura em projetos de dados em larga escala.", "link": "https://tecnoblog.net/noticias/boom-da-ia-faz-disparar-demanda-por-fitas-magneticas/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "02/11/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Anthropic restringe Claude para evitar clones de videogames", "resumo": "A Anthropic atualizou o prompt de sistema do Claude Code para impedir que a ferramenta seja usada na recriação de jogos existentes. A medida responde a uma onda de decompilações e ports feitos com IA no cenário retro gaming, embora a empresa continue permitindo a criação de jogos originais com a ferramenta.", "por_que_importa": "Mostra como fornecedores de IA estão sendo forçados a criar barreiras de propriedade intelectual, algo que pode se tornar padrão em outras categorias de produtos digitais.", "link": "https://www.theverge.com/ai-artificial-intelligence/1024632/anthropic-claude-ai-video-game-clones", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "02/11/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Xbox Series S ainda é vendido oficialmente no Brasil?", "resumo": "A Microsoft reduziu drasticamente a presença do Xbox no mercado brasileiro, com aumentos de preço e aparente interrupção no fornecimento de consoles aos varejistas. Com GTA 6 chegando e o anúncio de upscaling via IA da AMD para o Xbox, o texto investiga se ainda é possível comprar um Series S oficialmente no país.", "por_que_importa": "A retração da Microsoft no Brasil evidencia riscos de descontinuidade de hardware em mercados emergentes, algo relevante para empresas que planejam estratégias de distribuição e suporte local a longo prazo.", "link": "https://canaltech.com.br/games/ainda-da-para-comprar-um-xbox-series-s-oficialmente-no-brasil/", "fonte": "Canaltech", "categoria": "Brasil", "data": "02/11/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "NYT processa navegador Brave por scraping de IA e burlar paywalls", "resumo": "O New York Times e outros veículos, incluindo o New York Daily News e o Chicago Tribune, entraram com processos contra a empresa por trás do navegador Brave. A acusação é de coleta ilegal de conteúdo para treinar modelos de IA e de permitir que usuários driblem os paywalls dos sites.", "por_que_importa": "O caso pode definir limites legais para scraping de dados por navegadores e ferramentas de IA, impactando diretamente estratégias de monetização de conteúdo e parcerias entre editoras e empresas de tecnologia.", "link": "https://www.theverge.com/tech/1024588/brave-lawsuit-ai-scraping-new-york-times", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "02/11/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Google recapitula novidades de IA anunciadas em outubro", "resumo": "O Google publicou um resumo mensal com as principais atualizações de IA divulgadas em outubro de 2026, apresentadas em formato de carrossel visual. O conteúdo reúne lançamentos, melhorias de produtos e avanços de pesquisa feitos pela empresa no período.", "por_que_importa": "Acompanhar esses resumos ajuda equipes de produto a identificar tendências e recursos do Google que podem ser integrados ou usados como referência competitiva em roadmaps de IA.", "link": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/", "fonte": "Google AI Blog", "categoria": "Labs & Modelos", "data": "02/11/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "O desafio da qualidade dos insights na análise com IA agêntica", "resumo": "A IA generativa democratizou o acesso à análise de dados nas empresas, e agora a IA agêntica promete ir além, automatizando fluxos de trabalho inteiros e tomando ações baseadas em insights gerados por agentes. No entanto, a qualidade desses insights ainda representa um obstáculo significativo para essa evolução.", "por_que_importa": "Antes de investir em automação de decisões via IA agêntica, empresas precisam garantir mecanismos robustos de validação de insights para evitar ações equivocadas em escala.", "link": "https://www.technologyreview.com/2026/11/02/1147660/raising-the-quality-of-insights-in-agentic-analytics/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "02/11/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Startup 42AI sai do modo stealth com US$ 62,5 milhões e modelo que prevê comportamento humano", "resumo": "A 42AI anunciou publicamente sua existência após captar US$ 62,5 milhões em investimentos, apresentando um 'world model' capaz de antecipar ações humanas mesmo em cenários inéditos. A tecnologia promete ir além do reconhecimento de padrões, simulando como pessoas reagiriam em situações nunca vistas antes.", "por_que_importa": "Modelos preditivos de comportamento humano podem revolucionar desde UX e personalização de produtos até automação e robótica, abrindo nichos de mercado totalmente novos para empresas que dominarem essa tecnologia primeiro.", "link": "https://techcrunch.com/2026/11/02/42ai-comes-out-of-stealth-with-62-5m-and-a-world-model-that-can-predict-human-behavior/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "02/11/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Omen AI compra Aquatic Labs por US$ 16 milhões em refrigeração líquida", "resumo": "A Omen AI adquiriu a Aquatic Labs em um acordo de US$ 16 milhões, unindo duas startups focadas em resolver o problema de consumo e gestão de água em data centers. A combinação busca acelerar soluções de refrigeração líquida mais eficientes para infraestrutura de IA.", "por_que_importa": "Com data centers de IA consumindo cada vez mais energia e água, soluções de refrigeração eficiente se tornam diferencial competitivo crítico para provedores de infraestrutura e nuvem.", "link": "https://techcrunch.com/2026/11/02/omen-ai-adds-liquid-know-how-in-16-million-aquatic-labs-acquisition/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "02/11/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Mais que tokens: o que importa é o que o agente entrega", "resumo": "Agentes de IA para codificação consomem de 10 a 50 vezes mais tokens que um prompt de chat simples, pois planejam, geram código, testam e corrigem erros em múltiplas iterações. O artigo argumenta que medir custo apenas por tokens consumidos é insuficiente para avaliar o valor real desses agentes.", "por_que_importa": "Empresas que adotam agentes de codificação precisam repensar métricas de custo e ROI, avaliando entregas concretas em vez de consumo bruto de tokens, sob risco de subestimar ou superestimar o valor da automação.", "link": "https://www.technologyreview.com/2026/11/02/1147702/stop-counting-tokens-start-counting-what-ships/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "02/11/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "A web agêntica finalmente chegou", "resumo": "O artigo resgata a visão de Tim Berners-Lee de 2001 sobre uma 'Web Semântica' navegada por agentes autônomos de software, e argumenta que essa ideia está finalmente se tornando realidade com os avanços em IA. Agentes capazes de realizar tarefas complexas na internet em nome dos usuários estão se tornando tecnicamente viáveis duas décadas depois da proposta original.", "por_que_importa": "Empresas que não adaptarem seus produtos e sites para interação com agentes de IA correm o risco de ficar invisíveis nessa nova camada de navegação autônoma da web.", "link": "https://www.technologyreview.com/2026/11/02/1147846/the-agentic-web-is-here/", "fonte": "MIT Technology Review - AI", "categoria": "Pesquisa & Tendências", "data": "02/11/2026", "cor": "#7F77DD", "selo_bg": "#EDEAFB", "selo_texto": "#3C3489"}, {"titulo": "Qodo integra contexto corporativo à revisão de código com Codex", "resumo": "A Qodo passou a incorporar o conhecimento da empresa e seus padrões de codificação diretamente no Codex, da OpenAI. Isso permite que desenvolvedores identifiquem problemas críticos (P0) em múltiplos repositórios antes mesmo de abrir um pull request.", "por_que_importa": "Reduzir falhas críticas antes da revisão humana acelera ciclos de desenvolvimento e diminui custos de retrabalho, tornando a IA um filtro de qualidade estratégico em pipelines de engenharia.", "link": "https://openai.com/index/qodo-codex-plugin", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "02/11/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "O que as empresas fazem para treinar suas IAs", "resumo": "Treinar modelos como ChatGPT e Gemini exige volumes gigantescos de dados de qualidade, que já não acompanham o crescimento dos sistemas. Isso levou empresas de tecnologia a buscarem fontes alternativas, envolvendo coleta massiva de conteúdo e trabalho humano para classificar e validar respostas, o que levanta questões sobre direitos autorais, privacidade e condições trabalhistas.", "por_que_importa": "Empresas que dependem de IA generativa precisam ficar atentas à procedência dos dados usados em modelos de terceiros, já que riscos legais e reputacionais na cadeia de treinamento podem impactar diretamente produtos construídos sobre essas plataformas.", "link": "https://canaltech.com.br/inteligencia-artificial/ate-onde-as-empresas-vao-para-treinar-suas-ias/", "fonte": "Canaltech", "categoria": "Brasil", "data": "01/11/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "RX 580 da AMD ainda compensa comprar em 2026?", "resumo": "A Radeon RX 580, lançada em 2017 e símbolo de custo-benefício no Brasil, ainda roda jogos leves e títulos multiplayer em 1080p com desempenho aceitável. Porém, com as exigências atuais de APIs gráficas, upscaling por IA e DirectX 12 Ultimate, a GPU começa a mostrar sinais de desgaste frente aos jogos mais modernos.", "por_que_importa": "Mostra como o mercado de entrada de hardware no Brasil ainda sustenta produtos antigos por preço, um sinal relevante para quem pensa em estratégias de hardware acessível e ciclo de vida de componentes em produtos de tecnologia.", "link": "https://canaltech.com.br/hardware/ainda-vale-a-pena-comprar-a-radeon-rx-560-em-2026/", "fonte": "Canaltech", "categoria": "Brasil", "data": "01/11/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Data centers viram tema eleitoral até no Brooklyn", "resumo": "Em um evento político no Brooklyn às vésperas das eleições de meio de mandato, discussões sobre IA e data centers dominaram as conversas, de debates partidários a bate-papos com vereadores. O tema, antes técnico, passou a ser pauta central na política local dos EUA.", "por_que_importa": "A infraestrutura de IA está se tornando um ativo politicamente sensível, o que pode gerar novas regulações e pressões sociais sobre expansão de data centers em diversos mercados.", "link": "https://techcrunch.com/2026/10/31/data-centers-are-now-a-midterm-issue-even-in-brooklyn/", "fonte": "TechCrunch AI", "categoria": "Mercado & Negócios", "data": "01/11/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "Gigantes de IA apoiam novo padrão para bloquear coleta de dados", "resumo": "OpenAI, Google, Microsoft e Anthropic anunciaram que adotarão um padrão comum para que editores possam optar por não ter seu conteúdo usado no treinamento de modelos de IA. O mecanismo, baseado em um 'token de política' compartilhado, permite que publishers definam suas preferências uma única vez e apliquem a todas essas empresas simultaneamente.", "por_que_importa": "Simplifica a governança de dados para editores e sinaliza um movimento do setor em direção a padrões de consentimento mais transparentes, algo que pode se tornar referência regulatória e afetar estratégias de licenciamento de conteúdo.", "link": "https://www.theverge.com/tech/1023763/openai-google-microsoft-ai-scraping-standard-opt-out", "fonte": "The Verge - AI", "categoria": "Mercado & Negócios", "data": "30/10/2026", "cor": "#1D9E75", "selo_bg": "#DFF5F0", "selo_texto": "#0F6E56"}, {"titulo": "OpenAI facilita controle de sites sobre uso em treinamento de IA", "resumo": "A OpenAI anunciou que passará a respeitar um sinal padronizado no robots.txt para que operadores de sites indiquem suas preferências sobre uso de conteúdo em treinamento de IA. A medida busca criar um mecanismo comum entre provedores participantes, simplificando a gestão de permissões por parte dos sites.", "por_que_importa": "Empresas que dependem de conteúdo web precisarão revisar suas políticas de robots.txt para controlar exposição a treinamento de IA, impactando estratégias de proteção de dados e propriedade intelectual.", "link": "https://openai.com/index/helping-websites-express-ai-training-preferences", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "30/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}, {"titulo": "Vivo libera OriginOS 7 com Android 17 no Brasil", "resumo": "A Vivo começou a distribuir o OriginOS 7, baseado no Android 17, para a linha X300 no Brasil. A atualização traz maior integração entre dispositivos e um assistente de IA próprio da marca, batizado de Jovi.", "por_que_importa": "Fabricantes investindo em assistentes de IA proprietários e ecossistemas integrados aumentam a pressão competitiva sobre players de software e serviços que dependem de camadas abertas do Android.", "link": "https://tecnoblog.net/noticias/android-17-jovi-comeca-a-liberar-originos-7-no-brasil/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "29/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "Gemini ganha edição nativa de PDFs e documentos", "resumo": "O Google atualizou o Gemini para permitir a edição de arquivos diretamente em sua interface, sem precisar de outros aplicativos. O recurso cobre PDFs, documentos de texto, planilhas e trechos de código.", "por_que_importa": "A edição integrada reduz a necessidade de alternar entre ferramentas, reforçando a disputa do Gemini com Copilot e ChatGPT por produtividade corporativa.", "link": "https://tecnoblog.net/noticias/gemini-agora-permite-editar-pdfs-e-documentos-em-sua-propria-interface/", "fonte": "Tecnoblog", "categoria": "Brasil", "data": "29/10/2026", "cor": "#B0805A", "selo_bg": "#F7EEE7", "selo_texto": "#6B4A2E"}, {"titulo": "OpenAI atualiza diretrizes de comportamento para modelos de IA", "resumo": "A OpenAI revisou seu Model Spec, documento que define como seus modelos de IA devem se comportar, estabelecendo cinco valores centrais. O foco está em promover julgamento sólido, preservar a autonomia humana e garantir fidelidade às intenções dos usuários.", "por_que_importa": "Define o padrão de governança e segurança que moldará o comportamento de IAs cada vez mais capazes, impactando diretamente como empresas podem confiar e integrar esses modelos em produtos críticos.", "link": "https://openai.com/index/updated-model-spec", "fonte": "OpenAI News", "categoria": "Labs & Modelos", "data": "29/10/2026", "cor": "#E08D2D", "selo_bg": "#FDEEDC", "selo_texto": "#8A4B12"}]</script>
+  <script>
+    const artigos = JSON.parse(document.getElementById('dados-artigos').textContent);
+    const categorias = [{"nome": "Brasil", "cor": "#B0805A"}, {"nome": "Mercado & Negócios", "cor": "#1D9E75"}, {"nome": "Labs & Modelos", "cor": "#E08D2D"}, {"nome": "Pesquisa & Tendências", "cor": "#7F77DD"}];
+    const CHAVE_FAVORITOS = 'ai-digest-favoritos-boletimdeia';
+
+    let favoritos = new Set(JSON.parse(localStorage.getItem(CHAVE_FAVORITOS) || '[]'));
+    let categoriaAtiva = 'todas';
+    let somenteFavoritos = false;
+    let termoBusca = '';
+
+    function salvarFavoritos() {
+      localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto || '';
+      return div.innerHTML;
+    }
+
+    function normalizar(texto) {
+      return (texto || '').toLowerCase();
+    }
+
+    function artigosFiltrados() {
+      return artigos.filter(a => {
+        if (somenteFavoritos && !favoritos.has(a.link)) return false;
+        if (categoriaAtiva !== 'todas' && a.categoria !== categoriaAtiva) return false;
+        if (termoBusca) {
+          const texto = normalizar(a.titulo + ' ' + a.resumo + ' ' + a.fonte);
+          if (!texto.includes(normalizar(termoBusca))) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarFiltros() {
+      const container = document.getElementById('filtros');
+      let html = '<span class="chip todas-chip" data-cat="todas">todas</span>';
+      categorias.forEach(cat => {
+        html += `<span class="chip" data-cat="${escaparHtml(cat.nome)}"><span class="ponto" style="background:${cat.cor}"></span>${escaparHtml(cat.nome)}</span>`;
+      });
+      html += '<span class="chip favoritos-chip" data-cat="__favoritos__">&#9733; favoritos</span>';
+      container.innerHTML = html;
+
+      container.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          if (cat === '__favoritos__') {
+            somenteFavoritos = !somenteFavoritos;
+          } else {
+            categoriaAtiva = cat;
+          }
+          atualizarEstadoChips();
+          renderizarLista();
+        });
+      });
+      atualizarEstadoChips();
+    }
+
+    function atualizarEstadoChips() {
+      document.querySelectorAll('.chip').forEach(chip => {
+        const cat = chip.dataset.cat;
+        if (cat === '__favoritos__') {
+          chip.classList.toggle('ativo', somenteFavoritos);
+        } else {
+          chip.classList.toggle('ativo', cat === categoriaAtiva);
+        }
+      });
+    }
+
+    function cardHtml(a) {
+      const ehFavorito = favoritos.has(a.link);
+      const porQue = a.por_que_importa
+        ? `<p class="por-que"><strong>Por que importa:</strong> ${escaparHtml(a.por_que_importa)}</p>`
+        : '';
+      return `
+      <article class="card" style="--card-cor:${a.cor}">
+        <div class="card-topo">
+          <div class="card-meta">
+            <span class="selo" style="background:${a.selo_bg};color:${a.selo_texto}">${escaparHtml(a.categoria)}</span>
+            <span>${escaparHtml(a.fonte)}</span>
+            ${a.data ? `<span>${a.data}</span>` : ''}
+          </div>
+          <button class="favorito-btn ${ehFavorito ? 'ativo' : ''}" data-link="${escaparHtml(a.link)}" aria-label="Favoritar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${ehFavorito ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <h3>${a.link && a.link.startsWith('http') ? `<a href="${escaparHtml(a.link)}" target="_blank" rel="noopener">${escaparHtml(a.titulo)}</a>` : escaparHtml(a.titulo)}</h3>
+        <p class="resumo">${escaparHtml(a.resumo)}</p>
+        ${porQue}
+      </article>
+      `;
+    }
+
+    function renderizarLista() {
+      const lista = artigosFiltrados();
+      const container = document.getElementById('lista-artigos');
+      const contador = document.getElementById('contador');
+
+      contador.textContent = lista.length + (lista.length === 1 ? ' notícia exibida' : ' notícias exibidas');
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="vazio">
+            <p><strong>Nenhum sinal encontrado com esses filtros.</strong></p>
+            <p>Tente limpar a busca ou escolher outra categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map(cardHtml).join('');
+
+      container.querySelectorAll('.favorito-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const link = btn.dataset.link;
+          if (favoritos.has(link)) {
+            favoritos.delete(link);
+          } else {
+            favoritos.add(link);
+          }
+          salvarFavoritos();
+          renderizarLista();
+        });
+      });
+    }
+
+    document.getElementById('campo-busca').addEventListener('input', (e) => {
+      termoBusca = e.target.value;
+      renderizarLista();
+    });
+
+    renderizarFiltros();
+    renderizarLista();
+  </script>
+</body>
+</html>
